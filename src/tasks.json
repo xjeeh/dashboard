@@ -1,0 +1,17 @@
+{
+    "toDo": [
+        "Todo 1",
+        "Todo 2",
+        "Todo 3"
+    ],
+    "buy": [
+        "To buy 1",
+        "To buy 2"
+    ],
+    "task": [
+        "Task 1",
+        "Task 2",
+        "Task 3",
+        "Task 4"
+    ]
+}
