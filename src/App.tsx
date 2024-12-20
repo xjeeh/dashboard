@@ -1,82 +1,33 @@
-import React, { useEffect, useState } from "react";
-import "./App.css";
-import { SortableContainer, SortableElement } from "react-sortable-hoc";
-import { arrayMoveImmutable } from "array-move";
-import { default as axios } from "axios";
-import * as config from "./config.json";
+import styled from "styled-components";
+import Diet from "./components/diet";
+import JobOfferAnswer from "./components/jobOfferAnswer";
+import Todo from "./components/todo";
 
-interface IToDoList {
-  toDo: string[],
-  buy: string[],
-  task: string[],
-}
+const Wrapper = styled.div`
+  display: flex;
+  background: #2f3242;
+  width: 100vw;
+  height: 100vh;
+  color: white;
+  align-items: flex-start;
 
-function App() {
-  const [list, setToDo] = useState([] as string[]);
+  > * {
+    width: 25%;
+    display: flex;
+    justify-content: center;
+    flex-direction: column;
+    padding: 0px 10px;
+  }
+`;
 
-  useEffect(() => {
-    (async () => {
-      const { task } = await axios.get(`${config.serverURL}/toDoList`) as IToDoList;
-      setToDo(task);
-    })();
-  }, []);
-
-
-  const [description, setDescription] = useState('');
-
-  const submit = () => {
-    setToDo([...list, description]);
-    setDescription('');
-  };
-
-  const remove = () => {
-    console.log('Remove');
-  };
-
-  const SortableItem = SortableElement(({ value, i }: { value: string, i: number }) => {
-    return (
-      // <li>{value}</li>
-      <div className="item">
-        <div className="order">{i + 1}</div>
-        <div className="description">{value}</div>
-        <div className="action">
-          <div className="remove" onClick={() => remove()}>X</div>
-        </div>
-      </div>
-    );
-  });
-
-  const SortableList = SortableContainer(({ items }: { items: typeof list }) => {
-    return (
-      <div className="list">
-        {items?.map((item, i) => {
-          return (
-            <SortableItem key={`item-${item}`} index={i} value={item} i={i} />
-          );
-        })}
-      </div>
-    );
-  });
-
-  const onSortEnd = ({ oldIndex, newIndex }: { oldIndex: number, newIndex: number }) => {
-    setToDo((prevState) => arrayMoveImmutable(prevState, oldIndex, newIndex));
-  };
-
+const App = () => {
   return (
-
-    <div className="App">
-      <div className="form">
-        <input type="text" id="description" value={description} onChange={(e) => setDescription(e.target.value)} />
-        <button onClick={submit}>Add</button>
-      </div>
-      <SortableList
-        items={list}
-        onSortEnd={onSortEnd}
-        pressDelay={100}
-        helperClass="helper"
-      />
-    </div>
+    <Wrapper>
+      <Todo></Todo>
+      <Diet></Diet>
+      <JobOfferAnswer></JobOfferAnswer>
+    </Wrapper>
   );
-}
+};
 
 export default App;
