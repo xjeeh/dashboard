@@ -8,14 +8,7 @@
     "sourceType": "module",
     "allowImportExportEverywhere": true
   },
-  "plugins": [
-    "import",
-    "react",
-    "jest",
-    "@typescript-eslint",
-    "prettier",
-    "cypress"
-  ],
+  "plugins": ["import", "react", "jest", "@typescript-eslint", "prettier", "cypress"],
   "extends": [
     "airbnb-typescript",
     // "airbnb/hooks",
@@ -33,15 +26,8 @@
   "settings": {
     "import/resolver": {
       "node": {
-        "paths": [
-          "src"
-        ],
-        "extensions": [
-          ".js",
-          ".jsx",
-          ".ts",
-          ".tsx"
-        ]
+        "paths": ["src"],
+        "extensions": [".js", ".jsx", ".ts", ".tsx"]
       }
     }
   },
