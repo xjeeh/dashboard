@@ -1,11 +1,11 @@
 import { ChangeEvent, useEffect, useRef, useState } from "react";
-import "./style";
+import "./ToDo";
 import { default as axios } from "axios";
-import configs from "../../config.json";
-import { Wrapper } from "./style";
+import configs from "../config.json";
+import { Wrapper } from "./ToDo.module";
 
 import { ArrowDropUp, ArrowDropDown, Clear } from "@mui/icons-material";
-import { Icon, IconNames } from "../icon";
+import { Icon, IconNames } from "./Icon";
 
 interface ITodo {
   id?: string;

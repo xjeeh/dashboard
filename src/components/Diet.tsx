@@ -1,8 +1,8 @@
 import axios from "axios";
 import { format } from "date-fns";
 import React, { useEffect, useState } from "react";
-import { Container } from "./style";
-import configs from "../../config.json";
+import { Container } from "./Diet.module";
+import configs from "../config.json";
 
 interface IDiet {
   id?: string;

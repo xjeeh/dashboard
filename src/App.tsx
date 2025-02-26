@@ -1,7 +1,7 @@
 import styled from "styled-components";
-import Diet from "./components/diet";
-import JobOfferAnswer from "./components/jobOfferAnswer";
-import Todo from "./components/todo";
+import Diet from "./components/Diet";
+import JobOfferAnswer from "./components/JobOfferAnswer";
+import Todo from "./components/ToDo";
 
 const Wrapper = styled.div`
   display: flex;
