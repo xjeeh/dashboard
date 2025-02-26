@@ -2,20 +2,13 @@ import { ChangeEvent, useEffect, useRef, useState } from "react";
 import "./ToDo";
 import { default as axios } from "axios";
 import configs from "../config.json";
-import { Wrapper } from "./ToDo.module";
+import css from "./ToDo.module.scss";
 
 import { ArrowDropUp, ArrowDropDown, Clear } from "@mui/icons-material";
 import { Icon, IconNames } from "./Icon";
 
-interface ITodo {
-  id?: string;
-  order: number;
-  description: string;
-  finished: boolean;
-}
-
 const Todo = () => {
-  const [list, setList] = useState([] as ITodo[]);
+  const [list, setList] = useState([]);
   const [todo, setTodo] = useState({
     order: 0,
     description: "",
@@ -31,14 +24,14 @@ const Todo = () => {
     })();
   }, []);
 
-  const newRef = useRef<HTMLInputElement>(null);
+  const newRef = useRef < HTMLInputElement > null;
 
-  const onChange = (e: ChangeEvent<HTMLInputElement>) => {
+  const onChange = (e) => {
     const value = e.target?.value;
     setTodo((prevState) => ({ ...prevState, description: value }));
   };
 
-  const onToggleFinished = async (e: ChangeEvent<HTMLInputElement>, item: ITodo) => {
+  const onToggleFinished = async (e, item) => {
     const value = e.target?.checked;
     const newValue = { ...item, finished: value };
     const newList = list.map((i) => {
@@ -95,14 +88,14 @@ const Todo = () => {
   ];
 
   return (
-    <Wrapper>
+    <div className={css.wrapper}>
       <div className="tabs">
         {lists.map((item) => {
           const { id, name, icon, color } = item;
           return (
             <div className="tab selected" key={id}>
               <div className="icon">
-                <Icon name={icon as IconNames} color={color} />
+                <Icon name={icon} color={color} />
               </div>
               <div className="name">{name}</div>
             </div>
@@ -147,7 +140,7 @@ const Todo = () => {
           </div>
         </div>
       </div>
-    </Wrapper>
+    </div>
   );
 };
 

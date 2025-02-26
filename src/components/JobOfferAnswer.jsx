@@ -3,9 +3,9 @@ import getPeriod from "../utils/getDayPeriod";
 
 const JobOfferAnswer = () => {
   const [name, setName] = useState("Claudinha");
-  const [language, setLanguage] = useState<"pt" | "en">("pt");
-  const [dayPeriod, setDayPeriod] = useState<"morning" | "afternoon" | "night">(getPeriod());
-  const [isAnsweringGreet, setAnsweringOrAskingGreet] = useState<"answering" | "asking">("answering");
+  const [language, setLanguage] = useState("pt");
+  const [dayPeriod, setDayPeriod] = useState(getPeriod());
+  const [isAnsweringGreet, setAnsweringOrAskingGreet] = useState("answering");
 
   const greeting = {
     pt: { morning: "bom dia", afternoon: "boa tarde", night: "boa noite" },

@@ -16,7 +16,6 @@ module.exports = function (api) {
         },
       },
     ],
-    "@babel/preset-typescript",
     "@babel/preset-react",
   ];
 
@@ -36,12 +35,7 @@ module.exports = function (api) {
         limit: 100000,
       },
     ],
-    [
-      "babel-plugin-styled-components",
-      {
-        displayName: true,
-      },
-    ],
+    [],
   ];
   const include = ["src"];
   const compact = true;

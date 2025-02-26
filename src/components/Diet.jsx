@@ -1,18 +1,11 @@
 import axios from "axios";
 import { format } from "date-fns";
 import React, { useEffect, useState } from "react";
-import { Container } from "./Diet.module";
+import css from "./Diet.module.scss";
 import configs from "../config.json";
 
-interface IDiet {
-  id?: string;
-  date: Date;
-  name: string;
-  calories: number;
-}
-
 const Diet = () => {
-  const [list, setList] = useState([] as IDiet[]);
+  const [list, setList] = useState([]);
   useEffect(() => {
     (async () => {
       const { data } = await axios.get(`${configs.serverURL}/db?collection=diet`);
@@ -21,7 +14,7 @@ const Diet = () => {
   }, []);
 
   return (
-    <Container>
+    <div className={css.wrapper}>
       <table>
         <thead>
           <tr>
@@ -47,7 +40,7 @@ const Diet = () => {
         <input type="text" placeholder="Calorias" />
         <button>Add</button>
       </div>
-    </Container>
+    </div>
   );
 };
 
