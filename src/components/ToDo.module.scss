@@ -2,33 +2,32 @@
   padding: 15px;
   background: #444876;
   color: white;
+  display: flex;
+  flex-direction: column;
+
+  .form {
+    display: flex;
+    flex-direction: row;
+    padding: 5px 0px;
+    align-items: center;
+    cursor: default;
+    flex-basis: 100%;
+
+    .description {
+      display: flex;
+      flex: 1 0;
+      padding: 10px 10px 10px 0px;
+    }
+    .add {
+      display: flex;
+      background: mediumseagreen;
+      border: none;
+      padding: 5px 10px;
+      border-radius: 4px;
+    }
+  }
 
   .list {
-    display: flex;
-    flex-direction: column;
-
-    .new {
-      display: flex;
-      flex-direction: row;
-      padding: 5px 0px;
-      align-items: center;
-      cursor: default;
-      flex-basis: 100%;
-
-      .description {
-        display: flex;
-        flex: 1 0;
-        padding: 10px 10px 10px 0px;
-      }
-      .add {
-        display: flex;
-        background: mediumseagreen;
-        border: none;
-        padding: 5px 10px;
-        border-radius: 4px;
-      }
-    }
-
     .item {
       position: relative;
       display: flex;
@@ -61,7 +60,6 @@
         visibility: hidden;
         position: absolute;
         display: flex;
-        top: 10px;
         right: 0;
         flex: 0 0;
         padding: 0 10px;
