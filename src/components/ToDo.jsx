@@ -1,50 +1,11 @@
-import { useState, useRef } from "react";
-import { DndProvider, useDrag, useDrop } from "react-dnd";
+import { useState } from "react";
+import { DndProvider } from "react-dnd";
 import { HTML5Backend } from "react-dnd-html5-backend";
 import store from "store2";
 import { Icon } from "./Icon";
 import css from "./ToDo.module.scss";
 import useKeypress from "react-use-keypress";
-import classNames from "classnames";
-
-const DraggableItem = ({ currentTodo, item, index, move, onToggleFinished, onTogglePriority, edit, remove }) => {
-  const ref = useRef(null);
-
-  const [, drop] = useDrop({
-    accept: "TODO_ITEM",
-    hover: (draggedItem) => {
-      if (draggedItem.index !== index) {
-        move(draggedItem.index, index);
-        draggedItem.index = index;
-      }
-    },
-  });
-
-  const [, drag] = useDrag({ type: "TODO_ITEM", item: { index }, collect: (monitor) => ({ isDragging: monitor.isDragging() }) });
-
-  drag(drop(ref));
-
-  const itemClass = classNames(css.item, {
-    [css.editing]: currentTodo.id === item.id,
-    [css.finished]: item.finished,
-    [css.priority]: item.priority,
-  });
-
-  return (
-    <div ref={ref} className={itemClass}>
-      <div className={css.finished}>
-        <input type="checkbox" checked={item.finished} onChange={(e) => onToggleFinished(e, index)} />
-      </div>
-      <div className={css.description} onClick={(e) => edit(index, e)}>
-        {index + 1} - {item.description}
-      </div>
-      <div className={css.action}>
-        <Icon name="Warning" onClick={(e) => onTogglePriority(index, e)} color="#b76666" title="Toggle Priority" />
-        <Icon name="Clear" onClick={(e) => remove(index, e)} title="Remove" />
-      </div>
-    </div>
-  );
-};
+import ToDoItem from "./ToDoItem";
 
 const Todo = () => {
   const newTodo = () => ({ id: crypto.randomUUID(), order: list.length, description: "", finished: false, priority: false });
@@ -81,9 +42,7 @@ const Todo = () => {
 
   const onChange = ({ target: { value } }) => setCurrentTodo((prev) => ({ ...prev, description: value }));
 
-  const trySubmit = (e) => {
-    if (e.key === "Enter") save();
-  };
+  const trySubmit = (e) => (e.key === "Enter" ? save() : null);
 
   const toggleFinished = (index, e) => {
     e.stopPropagation();
@@ -174,7 +133,10 @@ const Todo = () => {
             </button>
           </div>
 
-          <div className={css.list}>{list.length > 0 ? list.map((item, i) => <DraggableItem currentTodo={currentTodo} key={item.id} index={i} item={item} move={move} onToggleFinished={toggleFinished} onTogglePriority={togglePriority} edit={edit} remove={remove} />) : <div className={css.empty}>No items</div>}</div>
+          <div className={css.list}>
+            {list.length > 0 && list.map((item, i) => <ToDoItem currentTodo={currentTodo} key={item.id} index={i} item={item} move={move} onToggleFinished={toggleFinished} onTogglePriority={togglePriority} edit={edit} remove={remove} />)}
+            {list.length <= 0 && <div className={css.empty}>No items</div>}
+          </div>
         </div>
       </div>
     </DndProvider>
