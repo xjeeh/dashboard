@@ -5,6 +5,7 @@ import ToDoItem from "./ToDoItem";
 import { useState } from "react";
 import store from "store2";
 import update from "immutability-helper";
+import classNames from "classnames";
 
 const ToDoList = ({ category }) => {
   const newTodo = () => ({ id: crypto.randomUUID(), order: list.length, description: "", finished: false, priority: false });
@@ -15,6 +16,8 @@ const ToDoList = ({ category }) => {
   const [list, setList] = useState(store(storageIndex) || []);
   const [currentTodo, setCurrentTodo] = useState(newTodo());
   const [isEditing, setIsEditing] = useState(false);
+  const [isMinimized, setIsMinimized] = useState(false);
+  const [isClosed, setIsClosed] = useState(false);
 
   const onChange = ({ target: { value } }) => setCurrentTodo((prev) => ({ ...prev, description: value }));
 
@@ -103,14 +106,20 @@ const ToDoList = ({ category }) => {
     console.warn("Restore done");
   };
 
-  return (
-    <div className={css.list}>
-      <div className={css.todo}>
-        <div className={css.category} style={{ backgroundColor: category.color }}>
-          <Icon name={category.icon} color="white" />
-          <span>{category.name}</span>
-        </div>
+  const toggleMinimize = () => setIsMinimized((prev) => !prev);
 
+  return (
+    <div className={classNames(css.list, { [css.closed]: isClosed })}>
+      <div className={css.category} style={{ backgroundColor: category.color }}>
+        <Icon name={category.icon} color="white" />
+        <span>{category.name}</span>
+        <div className={css.windowActions}>
+          <Icon name={isMinimized ? "Crop32" : "Minimize"} color="white" onClick={toggleMinimize} />
+          <Icon name="Close" color="red" onClick={() => setIsClosed(true)} />
+        </div>
+      </div>
+
+      <div className={classNames(css.body, { [css.minimized]: isMinimized })}>
         <div className={css.form}>
           <input className={css.description} type="text" placeholder="Add a new item" value={currentTodo.description} onChange={onChange} onKeyDown={trySubmit} />
           <button className={css.add} onClick={save}>

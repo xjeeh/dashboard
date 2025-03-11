@@ -1,6 +1,7 @@
 .lists {
   display: flex;
   gap: 5px;
+  align-items: flex-start;
 
   .list {
     padding: 15px;
@@ -12,116 +13,131 @@
     max-height: 90vh;
     overflow: hidden;
 
+    &.closed {
+      display: none;
+    }
+
     .category {
       display: flex;
       padding: 2.5px 5px;
       span {
         margin-left: 10px;
       }
-    }
 
-    .form {
-      display: flex;
-      flex-direction: row;
-      padding: 5px 0px;
-      align-items: center;
-      cursor: default;
-      margin-top: 10px;
-
-      .description {
-        margin-right: 5px;
-        width: 100%;
-      }
-
-      .add {
-        display: flex;
-        background: mediumseagreen;
-        border: none;
-        padding: 4px 6px;
-        border-radius: 4px;
-        margin-left: 3px;
-      }
-      .restore {
-        background: #aea2ff;
-        border: none;
-        padding: 4px 6px;
-        border-radius: 4px;
-        margin-left: 10px;
-      }
-
-      .backup {
-        background: #fcfcfc;
-        border: none;
-        padding: 4px 6px;
-        border-radius: 4px;
-        margin-left: 10px;
+      .windowActions {
+        margin-right: 0;
+        margin-left: auto;
       }
     }
 
-    .items {
-      margin-top: 10px;
-      overflow: auto;
-      max-height: 700px;
+    .body {
+      &.minimized {
+        display: none;
+      }
 
-      .item {
-        position: relative;
+      .form {
         display: flex;
         flex-direction: row;
-        font-size: 12px;
-        padding: 3px 5px;
+        padding: 5px 0px;
         align-items: center;
         cursor: default;
-        background: #3b3b3b;
-        margin: 2px 0px;
-        border: solid 1px #5c5c5c;
-        border-radius: 4px;
-
-        &.editing {
-          background: #54678d !important;
-        }
-
-        &.finished {
-          color: #a8a8a8;
-          text-decoration: line-through;
-        }
-
-        &.priority {
-          color: #e36b6b;
-        }
-
-        .toggleFinished input {
-          cursor: pointer;
-        }
+        margin-top: 10px;
 
         .description {
-          display: flex;
-          flex: 1 0;
-          padding: 0 10px 0 10px;
-          cursor: pointer;
+          margin-right: 5px;
+          width: 100%;
         }
 
-        &:hover .action {
-          visibility: visible;
+        .add {
+          display: flex;
+          background: mediumseagreen;
+          border: none;
+          padding: 4px 6px;
+          border-radius: 4px;
+          margin-left: 3px;
+        }
+        .restore {
+          background: #aea2ff;
+          border: none;
+          padding: 4px 6px;
+          border-radius: 4px;
+          margin-left: 10px;
         }
 
-        .action {
-          visibility: hidden;
-          position: absolute;
-          display: flex;
-          right: 0;
-          flex: 0 0;
-          padding: 0 5px;
-          user-select: none;
-          cursor: pointer;
+        .backup {
+          background: #fcfcfc;
+          border: none;
+          padding: 4px 6px;
+          border-radius: 4px;
+          margin-left: 10px;
         }
       }
-    }
 
-    .empty {
-      text-align: center;
-      background: #b9b9b938;
-      padding: 5px 1px;
-      font-size: 14px;
+      .items {
+        margin-top: 10px;
+        overflow: auto;
+        max-height: 700px;
+
+        .item {
+          position: relative;
+          display: flex;
+          flex-direction: row;
+          font-size: 12px;
+          padding: 3px 5px;
+          align-items: center;
+          cursor: default;
+          background: #3b3b3b;
+          margin: 2px 0px;
+          border: solid 1px #5c5c5c;
+          border-radius: 4px;
+
+          &.editing {
+            background: #54678d !important;
+          }
+
+          &.finished {
+            color: #a8a8a8;
+            text-decoration: line-through;
+          }
+
+          &.priority {
+            color: #e36b6b;
+          }
+
+          .toggleFinished input {
+            cursor: pointer;
+          }
+
+          .description {
+            display: flex;
+            flex: 1 0;
+            padding: 0 10px 0 10px;
+            cursor: pointer;
+          }
+
+          &:hover .action {
+            visibility: visible;
+          }
+
+          .action {
+            visibility: hidden;
+            position: absolute;
+            display: flex;
+            right: 0;
+            flex: 0 0;
+            padding: 0 5px;
+            user-select: none;
+            cursor: pointer;
+          }
+        }
+      }
+
+      .empty {
+        text-align: center;
+        background: #b9b9b938;
+        padding: 5px 1px;
+        font-size: 14px;
+      }
     }
   }
 }
