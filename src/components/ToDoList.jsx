@@ -106,11 +106,14 @@ const ToDoList = ({ category }) => {
     console.warn("Restore done");
   };
 
-  const toggleMinimize = () => setIsMinimized((prev) => !prev);
+  const toggleMinimize = (e) => {
+    e.stopPropagation();
+    setIsMinimized((prev) => !prev);
+  };
 
   return (
     <div className={classNames(css.list, { [css.closed]: isClosed })}>
-      <div className={css.category} style={{ backgroundColor: category.color }}>
+      <div className={css.category} onClick={toggleMinimize} style={{ backgroundColor: category.color }}>
         <Icon name={category.icon} color="white" />
         <span>{category.name}</span>
         <div className={css.windowActions}>

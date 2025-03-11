@@ -20,6 +20,7 @@
     .category {
       display: flex;
       padding: 2.5px 5px;
+      user-select: none;
       span {
         margin-left: 10px;
       }
