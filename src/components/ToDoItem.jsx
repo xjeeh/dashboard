@@ -4,20 +4,53 @@ import { useDrag, useDrop } from "react-dnd";
 import classNames from "classnames";
 import css from "./ToDo.module.scss";
 
-const ToDoItem = ({ currentTodo, item, index, move, onToggleFinished, onTogglePriority, edit, remove }) => {
+const ToDoItem = ({ storageIndex, currentTodo, item, index, move, find, onToggleFinished, onTogglePriority, edit, remove }) => {
   const ref = useRef(null);
 
-  const [, drop] = useDrop({
-    accept: "TODO_ITEM",
-    hover: (draggedItem) => {
-      if (draggedItem.index !== index) {
-        move(draggedItem.index, index);
-        draggedItem.index = index;
-      }
-    },
-  });
+  const originalIndex = find(item.id).index;
+  const { id } = item;
 
-  const [, drag] = useDrag({ type: "TODO_ITEM", item: { index }, collect: (monitor) => ({ isDragging: monitor.isDragging() }) });
+  const [{ isDragging }, drag] = useDrag(
+    () => ({
+      type: storageIndex,
+      item: { id, originalIndex },
+      collect: (monitor) => ({
+        isDragging: monitor.isDragging(),
+      }),
+      end: (item, monitor) => {
+        const { id: droppedId, originalIndex } = item;
+        const didDrop = monitor.didDrop();
+        if (!didDrop) {
+          move(droppedId, originalIndex);
+        }
+      },
+    }),
+    [id, originalIndex, move]
+  );
+
+  //   useDrag({ type: storageIndex, item: { index }, collect: (monitor) => ({ isDragging: monitor.isDragging() }) });
+
+  const [, drop] = useDrop(
+    () => ({
+      accept: storageIndex,
+      hover({ id: draggedId }) {
+        if (draggedId !== id) {
+          const { index: overIndex } = find(id);
+          move(draggedId, overIndex);
+        }
+      },
+    }),
+    [find, move]
+  );
+  //   useDrop({
+  //     accept: storageIndex,
+  //     hover: (draggedItem) => {
+  //       if (draggedItem.index !== index) {
+  //         move(draggedItem.index, index);
+  //         draggedItem.index = index;
+  //       }
+  //     },
+  //   });
 
   drag(drop(ref));
 
@@ -27,8 +60,10 @@ const ToDoItem = ({ currentTodo, item, index, move, onToggleFinished, onTogglePr
     [css.priority]: item.priority,
   });
 
+  const opacity = isDragging ? 0 : 1;
+
   return (
-    <div ref={ref} className={itemClass}>
+    <div ref={ref} className={itemClass} style={{ opacity }}>
       <div className={css.toggleFinished}>
         <input type="checkbox" checked={item.finished} onChange={(e) => onToggleFinished(index, e)} />
       </div>

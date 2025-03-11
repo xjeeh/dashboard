@@ -4,6 +4,7 @@ import useKeypress from "react-use-keypress";
 import ToDoItem from "./ToDoItem";
 import { useState } from "react";
 import store from "store2";
+import update from "immutability-helper";
 
 const ToDoList = ({ category }) => {
   const newTodo = () => ({ id: crypto.randomUUID(), order: list.length, description: "", finished: false, priority: false });
@@ -55,12 +56,24 @@ const ToDoList = ({ category }) => {
     setCurrentTodo({ ...list[index] });
   };
 
-  const move = (fromIndex, toIndex) => {
-    const updatedList = [...list];
-    const [movedItem] = updatedList.splice(fromIndex, 1);
-    updatedList.splice(toIndex, 0, movedItem);
+  const move = (id, atIndex) => {
+    const { item, index } = find(id);
+    const updatedList = update(list, {
+      $splice: [
+        [index, 1],
+        [atIndex, 0, item],
+      ],
+    });
     setList(updatedList);
     store(storageIndex, updatedList);
+  };
+
+  const find = (id) => {
+    const item = list.filter((c) => `${c.id}` === id)[0];
+    return {
+      item,
+      index: list.indexOf(item),
+    };
   };
 
   const save = () => {
@@ -112,7 +125,7 @@ const ToDoList = ({ category }) => {
         </div>
 
         <div className={css.items}>
-          {list.length > 0 && list.map((item, i) => <ToDoItem currentTodo={currentTodo} key={item.id} index={i} item={item} move={move} onToggleFinished={toggleFinished} onTogglePriority={togglePriority} edit={edit} remove={remove} />)}
+          {list.length > 0 && list.map((item, i) => <ToDoItem storageIndex={storageIndex} currentTodo={currentTodo} key={item.id} index={i} item={item} move={move} find={find} onToggleFinished={toggleFinished} onTogglePriority={togglePriority} edit={edit} remove={remove} />)}
           {list.length <= 0 && <div className={css.empty}>No items</div>}
         </div>
       </div>
