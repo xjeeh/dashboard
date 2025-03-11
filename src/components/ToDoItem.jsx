@@ -29,7 +29,7 @@ const ToDoItem = ({ currentTodo, item, index, move, onToggleFinished, onTogglePr
 
   return (
     <div ref={ref} className={itemClass}>
-      <div className={css.finished}>
+      <div className={css.toggleFinished}>
         <input type="checkbox" checked={item.finished} onChange={(e) => onToggleFinished(index, e)} />
       </div>
       <div className={css.description} onClick={(e) => edit(index, e)}>
