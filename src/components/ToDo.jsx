@@ -2,6 +2,8 @@ import ToDoList from "./ToDoList";
 import css from "./ToDo.module.scss";
 import { DndProvider } from "react-dnd";
 import { HTML5Backend } from "react-dnd-html5-backend";
+import store from "store2";
+import { Icon } from "./Icon";
 
 const Todo = () => {
   const categories = [
@@ -21,12 +23,34 @@ const Todo = () => {
     },
   ];
 
+  const backup = () => {
+    categories.forEach((category) => store(`list-${category.storageIndex}-backup`, store(`list-${category.storageIndex}`)));
+    console.warn("Backup done");
+  };
+
+  const restore = () => {
+    categories.forEach((category) => {
+      store(`list-${category.storageIndex}`, store(`list-${category.storageIndex}-backup`));
+      window.location.reload();
+      // setList(store(storageBackupIndex));
+    });
+    console.warn("Restore done");
+  };
+
   return (
     <DndProvider backend={HTML5Backend}>
       <div className={css.lists}>
         {categories.map((category) => (
           <ToDoList key={category.id} category={category} />
         ))}
+      </div>
+      <div className={css.options}>
+        <button onClick={backup} className={css.backup} title="Save Backup">
+          <Icon name="Backup" />
+        </button>
+        <button onClick={restore} className={css.restore} title="Restore backup">
+          <Icon name="RestartAlt" />
+        </button>
       </div>
     </DndProvider>
   );

@@ -11,7 +11,6 @@ const ToDoList = ({ category }) => {
   const newTodo = () => ({ id: crypto.randomUUID(), order: list.length, description: "", finished: false, priority: false });
 
   const storageIndex = `list-${category.storageIndex}`;
-  const storageBackupIndex = `${storageIndex}-backup`;
 
   const [list, setList] = useState(store(storageIndex) || []);
   const [currentTodo, setCurrentTodo] = useState(newTodo());
@@ -44,7 +43,6 @@ const ToDoList = ({ category }) => {
   };
 
   const togglePriority = (index, e) => {
-    console.log("togglePriority", e, index);
     e.stopPropagation();
     const updatedList = [...list];
     updatedList[index].priority = !updatedList[index].priority;
@@ -53,7 +51,6 @@ const ToDoList = ({ category }) => {
   };
 
   const edit = (index, e) => {
-    console.log("edit", index, e);
     e.stopPropagation();
     setIsEditing(true);
     setCurrentTodo({ ...list[index] });
@@ -95,17 +92,6 @@ const ToDoList = ({ category }) => {
     clearForm();
   };
 
-  const backup = () => {
-    store(storageBackupIndex, store(storageIndex));
-    console.warn("Backup done");
-  };
-
-  const restore = () => {
-    store(storageIndex, store(storageBackupIndex));
-    setList(store(storageBackupIndex));
-    console.warn("Restore done");
-  };
-
   const toggleMinimize = (e) => {
     e.stopPropagation();
     setIsMinimized((prev) => !prev);
@@ -113,7 +99,7 @@ const ToDoList = ({ category }) => {
 
   return (
     <div className={classNames(css.list, { [css.closed]: isClosed })}>
-      <div className={css.category} onClick={toggleMinimize} style={{ backgroundColor: category.color }}>
+      <div className={css.category} onClick={toggleMinimize} style={{ color: category.color }}>
         <Icon name={category.icon} color="white" />
         <span>{category.name}</span>
         <div className={css.windowActions}>
@@ -128,14 +114,7 @@ const ToDoList = ({ category }) => {
           <button className={css.add} onClick={save}>
             <Icon name={isEditing ? "Edit" : "Add"} color="white" />
           </button>
-          <button onClick={restore} className={css.restore} title="Restore backup">
-            <Icon name="CloudDownload" />
-          </button>
-          <button onClick={backup} className={css.backup} title="Save Backup">
-            <Icon name="CloudUpload" />
-          </button>
         </div>
-
         <div className={css.items}>
           {list.length > 0 && list.map((item, i) => <ToDoItem storageIndex={storageIndex} currentTodo={currentTodo} key={item.id} index={i} item={item} move={move} find={find} onToggleFinished={toggleFinished} onTogglePriority={togglePriority} edit={edit} remove={remove} />)}
           {list.length <= 0 && <div className={css.empty}>No items</div>}
