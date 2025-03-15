@@ -59,6 +59,28 @@
           border-radius: 4px;
           margin-left: 3px;
         }
+
+        .filter {
+          display: flex;
+
+          input {
+            border: none;
+            padding: 4px 6px;
+            border-radius: 4px;
+            color: white;
+            margin: 0 0px 0 10px;
+          }
+
+          button {
+            background: #2f2f2f;
+            border: none;
+            padding: 4px 6px;
+            border-radius: 4px;
+            color: white;
+            cursor: pointer;
+            margin-left: 5px;
+          }
+        }
       }
 
       .items {
@@ -84,11 +106,11 @@
           }
 
           &.priority {
-            color: #ffd68c;
+            color: #b76666;
           }
 
           &.finished {
-            color: #a8a8a8;
+            // color: #a8a8a8;
             text-decoration: line-through;
           }
 
@@ -126,6 +148,29 @@
         background: #b9b9b938;
         padding: 5px 1px;
         font-size: 14px;
+      }
+
+      .progress {
+        margin-top: 10px;
+        .total {
+          display: inline-block;
+          width: 100%;
+          height: 20px;
+          background: white;
+          position: relative;
+
+          .current {
+            background: #de7eca;
+            height: 100%;
+          }
+          .label {
+            color: #434343;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate3d(-50%, -50%, 0);
+          }
+        }
       }
     }
   }

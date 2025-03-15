@@ -52,9 +52,8 @@ input {
   padding: 8px 15px;
   box-sizing: border-box;
   background-color: #3b3b3b;
-  border: solid 1px #5c5c5c;
   color: white;
-  border-radius: 3px;
+  border: none;
 }
 
 select {

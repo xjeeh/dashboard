@@ -2,7 +2,7 @@ import { Icon } from "./Icon";
 import css from "./ToDo.module.scss";
 import useKeypress from "react-use-keypress";
 import ToDoItem from "./ToDoItem";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import store from "store2";
 import update from "immutability-helper";
 import classNames from "classnames";
@@ -17,6 +17,14 @@ const ToDoList = ({ category }) => {
   const [isEditing, setIsEditing] = useState(false);
   const [isMinimized, setIsMinimized] = useState(false);
   const [isClosed, setIsClosed] = useState(false);
+
+  const [filter, setFilter] = useState("");
+  const [showFilter, setShowFilter] = useState(true);
+
+  useEffect(() => {
+    const filteredList = store(storageIndex).filter((item) => item.description.toLowerCase().includes(filter.toLowerCase()));
+    setList(filteredList);
+  }, [filter, storageIndex]);
 
   const onChange = ({ target: { value } }) => setCurrentTodo((prev) => ({ ...prev, description: value }));
 
@@ -51,6 +59,7 @@ const ToDoList = ({ category }) => {
   };
 
   const edit = (index, e) => {
+    e.preventDefault();
     e.stopPropagation();
     setIsEditing(true);
     setCurrentTodo({ ...list[index] });
@@ -76,6 +85,11 @@ const ToDoList = ({ category }) => {
     };
   };
 
+  const toggleFilterVisibility = () => {
+    setShowFilter((prev) => !prev);
+    if (showFilter) setFilter("");
+  };
+
   const save = () => {
     if (!currentTodo.description) return;
     const updatedList = isEditing ? list.map((item) => (item.id === currentTodo.id ? currentTodo : item)) : [...list, { ...currentTodo, finished: false, order: list.length }];
@@ -97,6 +111,13 @@ const ToDoList = ({ category }) => {
     setIsMinimized((prev) => !prev);
   };
 
+  const progress = {
+    current: list.filter((i) => i.finished).length,
+    total: list.length,
+  };
+
+  progress.percent = (progress.current / progress.total) * 100;
+
   return (
     <div className={classNames(css.list, { [css.closed]: isClosed })}>
       <div className={css.category} onClick={toggleMinimize} style={{ color: category.color }}>
@@ -114,10 +135,24 @@ const ToDoList = ({ category }) => {
           <button className={css.add} onClick={save}>
             <Icon name={isEditing ? "Edit" : "Add"} color="white" />
           </button>
+          <div className={css.filter}>
+            {showFilter && <input type="text" placeholder="Filter values" value={filter} onChange={({ target: { value } }) => setFilter(value)} />}
+            <button onClick={toggleFilterVisibility}>
+              <Icon name={showFilter ? "Close" : "FilterList"} color="white" />
+            </button>
+          </div>
         </div>
         <div className={css.items}>
           {list.length > 0 && list.map((item, i) => <ToDoItem storageIndex={storageIndex} currentTodo={currentTodo} key={item.id} index={i} item={item} move={move} find={find} onToggleFinished={toggleFinished} onTogglePriority={togglePriority} edit={edit} remove={remove} />)}
           {list.length <= 0 && <div className={css.empty}>No items</div>}
+        </div>
+        <div className={css.progress}>
+          <div className={css.total}>
+            <div className={css.current} style={{ width: `${progress.percent}%` }} />
+            <div className={css.label}>
+              <b>{`${progress.current}`}</b> of <b>{`${progress.total}`}</b> tasks done <b>({progress.percent.toFixed()}%</b>)
+            </div>
+          </div>
         </div>
       </div>
     </div>

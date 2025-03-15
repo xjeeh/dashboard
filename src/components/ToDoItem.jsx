@@ -56,11 +56,11 @@ const ToDoItem = ({ storageIndex, currentTodo, item, index, move, find, onToggle
       <div className={css.toggleFinished}>
         <input type="checkbox" checked={item.finished} onChange={(e) => onToggleFinished(index, e)} />
       </div>
-      <div className={css.description} onClick={(e) => edit(index, e)}>
+      <div className={css.description} onDoubleClick={(e) => edit(index, e)} onContextMenu={(e) => edit(index, e)}>
         {index + 1} - {item.description}
       </div>
       <div className={css.action}>
-        <Icon name="Warning" onClick={(e) => onTogglePriority(index, e)} color="#b76666" title="Toggle Priority" />
+        <Icon name="PriorityHigh" onClick={(e) => onTogglePriority(index, e)} color="#b76666" title="Toggle Priority" />
         <Icon name="Clear" onClick={(e) => remove(index, e)} title="Remove" />
       </div>
     </div>
