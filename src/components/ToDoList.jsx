@@ -6,6 +6,8 @@ import { useEffect, useState } from "react";
 import store from "store2";
 import update from "immutability-helper";
 import classNames from "classnames";
+import ProgressBar from "./ProgressBar";
+import YearProgessBar from "./YearProgressBar";
 
 const ToDoList = ({ category }) => {
   const newTodo = () => ({ id: crypto.randomUUID(), order: list.length, description: "", finished: false, priority: false });
@@ -136,7 +138,7 @@ const ToDoList = ({ category }) => {
             <Icon name={isEditing ? "Edit" : "Add"} color="white" />
           </button>
           <div className={css.filter}>
-            {showFilter && <input type="text" placeholder="Filter values" value={filter} onChange={({ target: { value } }) => setFilter(value)} />}
+            {showFilter && <input type="text" placeholder="Filter" value={filter} onChange={({ target: { value } }) => setFilter(value)} />}
             <button onClick={toggleFilterVisibility}>
               <Icon name={showFilter ? "Close" : "FilterList"} color="white" />
             </button>
@@ -146,14 +148,16 @@ const ToDoList = ({ category }) => {
           {list.length > 0 && list.map((item, i) => <ToDoItem storageIndex={storageIndex} currentTodo={currentTodo} key={item.id} index={i} item={item} move={move} find={find} onToggleFinished={toggleFinished} onTogglePriority={togglePriority} edit={edit} remove={remove} />)}
           {list.length <= 0 && <div className={css.empty}>No items</div>}
         </div>
-        <div className={css.progress}>
-          <div className={css.total}>
-            <div className={css.current} style={{ width: `${progress.percent}%` }} />
-            <div className={css.label}>
+        <ProgressBar
+          progress={progress}
+          label={
+            <>
               <b>{`${progress.current}`}</b> of <b>{`${progress.total}`}</b> tasks done <b>({progress.percent.toFixed()}%</b>)
-            </div>
-          </div>
-        </div>
+            </>
+          }
+        />
+
+        <YearProgessBar />
       </div>
     </div>
   );

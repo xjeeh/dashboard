@@ -23,6 +23,7 @@
       user-select: none;
       background: #2f2f2fc9;
       align-items: center;
+
       span {
         margin-left: 10px;
       }
@@ -30,6 +31,9 @@
       .windowActions {
         margin-right: 0;
         margin-left: auto;
+        svg {
+          cursor: pointer;
+        }
       }
     }
 
@@ -46,7 +50,7 @@
         cursor: default;
         margin-top: 10px;
 
-        .description {
+        input.description {
           margin-right: 5px;
           width: 100%;
         }
@@ -64,11 +68,11 @@
           display: flex;
 
           input {
+            width: 100px;
             border: none;
-            padding: 4px 6px;
             border-radius: 4px;
             color: white;
-            margin: 0 0px 0 10px;
+            margin-left: 10px;
           }
 
           button {
@@ -106,7 +110,7 @@
           }
 
           &.priority {
-            color: #b76666;
+            color: #9ba8ea;
           }
 
           &.finished {

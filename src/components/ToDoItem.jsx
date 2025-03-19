@@ -60,8 +60,8 @@ const ToDoItem = ({ storageIndex, currentTodo, item, index, move, find, onToggle
         {index + 1} - {item.description}
       </div>
       <div className={css.action}>
-        <Icon name="PriorityHigh" onClick={(e) => onTogglePriority(index, e)} color="#b76666" title="Toggle Priority" />
-        <Icon name="Clear" onClick={(e) => remove(index, e)} title="Remove" />
+        <Icon name="PriorityHigh" onClick={(e) => onTogglePriority(index, e)} color="##9ba8ea" title="Toggle Priority" />
+        <Icon name="Clear" onClick={(e) => remove(index, e)} title="Remove" color="red" />
       </div>
     </div>
   );
