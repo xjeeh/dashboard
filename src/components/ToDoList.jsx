@@ -2,7 +2,7 @@ import { Icon } from "./Icon";
 import css from "./ToDo.module.scss";
 import useKeypress from "react-use-keypress";
 import ToDoItem from "./ToDoItem";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import store from "store2";
 import update from "immutability-helper";
 import classNames from "classnames";
@@ -10,7 +10,7 @@ import ProgressBar from "./ProgressBar";
 import YearProgessBar from "./YearProgressBar";
 
 const ToDoList = ({ category }) => {
-  const newTodo = () => ({ id: crypto.randomUUID(), order: list.length, description: "", finished: false, priority: false });
+  const newTodo = () => ({ id: crypto.randomUUID(), description: "", finished: false, priority: false });
 
   const storageIndex = `list-${category.storageIndex}`;
 
@@ -22,6 +22,8 @@ const ToDoList = ({ category }) => {
 
   const [filter, setFilter] = useState("");
   const [showFilter, setShowFilter] = useState(true);
+
+  const descriptionInputRef = useRef(null);
 
   useEffect(() => {
     const filteredList = store(storageIndex).filter((item) => item.description.toLowerCase().includes(filter.toLowerCase()));
@@ -63,6 +65,10 @@ const ToDoList = ({ category }) => {
   const edit = (index, e) => {
     e.preventDefault();
     e.stopPropagation();
+
+    descriptionInputRef.current.focus();
+    // setTimeout(() => descriptionInputRef.current.setSelectionRange(0, 0), 0);
+
     setIsEditing(true);
     setCurrentTodo({ ...list[index] });
   };
@@ -94,7 +100,7 @@ const ToDoList = ({ category }) => {
 
   const save = () => {
     if (!currentTodo.description) return;
-    const updatedList = isEditing ? list.map((item) => (item.id === currentTodo.id ? currentTodo : item)) : [...list, { ...currentTodo, finished: false, order: list.length }];
+    const updatedList = isEditing ? list.map((item) => (item.id === currentTodo.id ? currentTodo : item)) : [...list, { ...currentTodo, finished: false }];
     setList(updatedList);
     store(storageIndex, updatedList);
     clearForm();
@@ -133,7 +139,7 @@ const ToDoList = ({ category }) => {
 
       <div className={classNames(css.body, { [css.minimized]: isMinimized })}>
         <div className={css.form}>
-          <input className={css.description} type="text" placeholder="Add a new item" value={currentTodo.description} onChange={onChange} onKeyDown={trySubmit} />
+          <input className={css.description} ref={descriptionInputRef} type="text" placeholder="Add a new item" value={currentTodo.description} onChange={onChange} onKeyDown={trySubmit} />
           <button className={css.add} onClick={save}>
             <Icon name={isEditing ? "Edit" : "Add"} color="white" />
           </button>
