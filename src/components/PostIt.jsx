@@ -1,38 +1,42 @@
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Icon } from "./Icon";
 import css from "./PostIt.module.scss";
 import classNames from "classnames";
 import store from "store2";
 
 export const PostIt = () => {
-  const [text, setText] = useState(store.get("postIt-daily"));
-
-  const [isMinimized, setIsMinimized] = useState(false);
-  const [isClosed, setIsClosed] = useState(false);
+  const storeIndex = "postIt-daily";
+  const [postIt, setPostIt] = useState(store.get(storeIndex));
 
   const ref = useRef(null);
 
+  useEffect(() => {
+    store.set(storeIndex, postIt);
+  }, [postIt]);
+
   const toggleMinimize = (e) => {
     e.stopPropagation();
-    setIsMinimized((prev) => !prev);
+    setPostIt((prev) => ({ ...prev, isMinimized: !prev.isMinimized }));
+  };
+
+  const close = (e) => {
+    e.stopPropagation();
+    setPostIt((prev) => ({ ...prev, isClosed: !prev.isClosed }));
   };
 
   const handleSetText = ({ target }) => {
-    setText(target.value);
-    store.set("postIt-daily", target.value);
+    setPostIt((prev) => ({ ...prev, text: target.value }));
   };
 
-  let offsetX = 0;
-  let offsetY = 0;
+  const offset = useRef({ x: 0, y: 0 });
 
   const dragStart = (e) => {
     const rect = ref.current.getBoundingClientRect();
-    offsetX = e.clientX - rect.left;
-    offsetY = e.clientY - rect.top;
+    offset.current.x = e.clientX - rect.left;
+    offset.current.y = e.clientY - rect.top;
 
     e.dataTransfer.setData("text/plain", "dragging");
 
-    // Esconde a imagem de drag padrão
     const img = new Image();
     img.src = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABAQMAAAAl21bKAAAAA1BMVEWZmZmILVbPAAAAAXRSTlMAQObYZgAAAApJREFUCNdjYAAAAAIAAeIhvDMAAAAASUVORK5CYII=";
     e.dataTransfer.setDragImage(img, 0, 0);
@@ -45,16 +49,24 @@ export const PostIt = () => {
     if (!x || !y) return;
 
     const note = ref.current;
+
+    const newX = `${x - offset.current.x}px`;
+    const newY = `${y - offset.current.y}px`;
+
     note.style.position = "absolute";
-    note.style.left = `${x - offsetX}px`;
-    note.style.top = `${y - offsetY}px`;
+    note.style.left = newX;
+    note.style.top = newY;
+
+    setPostIt((prev) => ({ ...prev, x: newX, y: newY }));
   };
 
+  const { x, y, isMinimized, isClosed, text } = postIt;
+
   return (
-    <div ref={ref} className={classNames(css.wrapper, { [css.minimized]: isMinimized, [css.closed]: isClosed })} draggable="true" onDragStart={dragStart} onDrag={dragNote}>
-      <div className={css.windowActions}>
-        <Icon name={isMinimized ? "Crop32" : "Minimize"} color="black" onClick={toggleMinimize} />
-        <Icon name="Close" color="red" onClick={() => setIsClosed(true)} />
+    <div ref={ref} style={{ left: x, top: y }} className={classNames(css.wrapper, { [css.minimized]: isMinimized, [css.closed]: isClosed })} draggable="true" onDragStart={dragStart} onDrag={dragNote}>
+      <div className={css.windowActions} onClick={toggleMinimize}>
+        <Icon name={isMinimized ? "Crop32" : "Minimize"} color="black" />
+        <Icon name="Close" color="red" onClick={() => close()} />
       </div>
       <textarea value={text} onChange={handleSetText} spellCheck="false"></textarea>
     </div>
