@@ -3,3 +3,199 @@
     vertical-align: baseline;
   }
 }
+
+.wrapper {
+  max-width: 900px;
+  margin: 32px auto;
+  background: #444876;
+  border-radius: 16px;
+  box-shadow: 0 2px 16px #0003;
+  padding: 24px;
+  color: white;
+}
+
+.dateNav {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 24px;
+  gap: 8px;
+}
+
+.dateNavButton {
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 8px;
+  border-radius: 8px;
+  transition: background 0.2s;
+  color: white;
+}
+.dateNavButton:hover {
+  background: #393c5a;
+}
+
+.selectedDate {
+  margin: 0 16px;
+  font-weight: bold;
+  padding: 4px 16px;
+  border-radius: 12px;
+  background: #393c5a;
+  color: #9ba8ea;
+  border: 2px solid #9ba8ea;
+  letter-spacing: 0.5px;
+  transition: all 0.2s;
+  min-width: 120px;
+  text-align: center;
+}
+
+.tableWrapper {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0;
+  background: #393c5a;
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 1px 4px #0002;
+  color: white;
+}
+
+.tableHeader {
+  background: #23243a;
+  color: #9ba8ea;
+}
+
+.tableHeader th {
+  padding: 10px 8px;
+  text-align: left;
+  font-weight: 700;
+}
+
+.tableRow {
+  cursor: move;
+  transition: background-color 0.2s;
+  border-bottom: 1px solid #444876;
+
+  &:hover {
+    background-color: #2d2e4a;
+  }
+
+  &.dragging {
+    background-color: #2d2e4a;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+  }
+}
+
+.tableCell {
+  padding: 8px 8px;
+  font-size: 15px;
+  text-align: center;
+}
+
+.tableCellRight {
+  text-align: right;
+}
+
+.tableCellCenter {
+  text-align: center;
+}
+
+.actionButton {
+  background: none;
+  border: none;
+  cursor: pointer;
+  margin-right: 8px;
+}
+
+.deleteButton {
+  background: none;
+  border: none;
+  cursor: pointer;
+}
+
+.form {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-top: 24px;
+  align-items: flex-end;
+  justify-content: center;
+}
+
+.formField,
+.formFieldLarge {
+  min-width: 140px;
+  flex: 1 1 140px;
+}
+
+.formLabel {
+  display: block;
+  margin-bottom: 4px;
+  font-size: 13px;
+  color: #9ba8ea;
+  text-align: left;
+}
+
+.input,
+.select {
+  padding: 8px 12px;
+  border-radius: 8px;
+  border: 1.5px solid #9ba8ea;
+  font-size: 15px;
+  width: 100%;
+  background: #23243a;
+  color: white;
+  min-width: 0;
+  box-sizing: border-box;
+  text-align: left;
+}
+.input[readonly] {
+  opacity: 0.7;
+}
+
+.buttonGroup {
+  align-self: end;
+  min-width: 140px;
+  display: flex;
+  gap: 8px;
+}
+
+.submitButton {
+  background: #9ba8ea;
+  color: #23243a;
+  border: none;
+  border-radius: 8px;
+  padding: 10px 18px;
+  font-weight: bold;
+  font-size: 15px;
+  box-shadow: 0 1px 4px #0001;
+  cursor: pointer;
+  transition: background 0.2s;
+  width: 100%;
+}
+.submitButton:hover {
+  background: #7a8fd6;
+}
+
+.cancelButton {
+  background: #e0e4f7;
+  color: #23243a;
+  border: none;
+  border-radius: 8px;
+  padding: 10px 18px;
+  font-weight: bold;
+  font-size: 15px;
+  box-shadow: 0 1px 4px #0001;
+  cursor: pointer;
+  transition: background 0.2s;
+  width: 100%;
+}
+.cancelButton:hover {
+  background: #cfd8ee;
+}
+
+// Primeira coluna (Nome) alinhada à esquerda
+.tableRow td:first-child,
+.tableHeader th:first-child {
+  text-align: left;
+}
