@@ -24,7 +24,9 @@ const Todo = () => {
   ];
 
   const backup = () => {
-    categories.forEach((category) => store(`list-${category.storageIndex}-backup`, store(`list-${category.storageIndex}`)));
+    categories.forEach((category) =>
+      store(`list-${category.storageIndex}-backup`, store(`list-${category.storageIndex}`))
+    );
     console.warn("Backup done");
   };
 

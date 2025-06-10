@@ -4,7 +4,19 @@ import { useDrag, useDrop } from "react-dnd";
 import classNames from "classnames";
 import css from "./ToDo.module.scss";
 
-const ToDoItem = ({ storageIndex, currentTodo, item, index, move, find, onToggleFinished, onTogglePriority, edit, remove }) => {
+const ToDoItem = ({
+  storageIndex,
+  currentTodo,
+  item,
+  index,
+  visualIndex,
+  move,
+  find,
+  onToggleFinished,
+  onTogglePriority,
+  edit,
+  remove,
+}) => {
   const ref = useRef(null);
 
   const originalIndex = find(item.id).index;
@@ -54,13 +66,26 @@ const ToDoItem = ({ storageIndex, currentTodo, item, index, move, find, onToggle
   return (
     <div ref={ref} className={itemClass} style={{ opacity }}>
       <div className={css.toggleFinished}>
-        <input type="checkbox" checked={item.finished} onChange={(e) => onToggleFinished(index, e)} />
+        <input
+          type="checkbox"
+          checked={item.finished}
+          onChange={(e) => onToggleFinished(index, e)}
+        />
       </div>
-      <div className={css.description} onDoubleClick={(e) => edit(index, e)} onContextMenu={(e) => edit(index, e)}>
-        {index + 1} - {item.description}
+      <div
+        className={css.description}
+        onDoubleClick={(e) => edit(index, e)}
+        onContextMenu={(e) => edit(index, e)}
+      >
+        {visualIndex + 1} - {item.description}
       </div>
       <div className={css.action}>
-        <Icon name="PriorityHigh" onClick={(e) => onTogglePriority(index, e)} color="#ffae00" title="Toggle Priority" />
+        <Icon
+          name="PriorityHigh"
+          onClick={(e) => onTogglePriority(index, e)}
+          color="#ffae00"
+          title="Toggle Priority"
+        />
         <Icon name="Clear" onClick={(e) => remove(index, e)} title="Remove" color="red" />
       </div>
     </div>

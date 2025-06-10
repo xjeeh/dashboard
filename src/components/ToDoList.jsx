@@ -10,15 +10,22 @@ import ProgressBar from "./ProgressBar";
 import YearProgessBar from "./YearProgressBar";
 
 const ToDoList = ({ category }) => {
-  const newTodo = () => ({ id: crypto.randomUUID(), description: "", finished: false, priority: false });
+  const newTodo = () => ({
+    id: crypto.randomUUID(),
+    description: "",
+    finished: false,
+    priority: false,
+  });
 
   const storageIndex = `list-${category.storageIndex}`;
+  const showCompletedKey = `${storageIndex}-showCompleted`;
 
   const [list, setList] = useState(store(storageIndex) || []);
   const [currentTodo, setCurrentTodo] = useState(newTodo());
   const [isEditing, setIsEditing] = useState(false);
   const [isMinimized, setIsMinimized] = useState(false);
   const [isClosed, setIsClosed] = useState(false);
+  const [showCompleted, setShowCompleted] = useState(store(showCompletedKey) ?? true);
 
   const [filter, setFilter] = useState("");
   const [showFilter, setShowFilter] = useState(true);
@@ -26,11 +33,24 @@ const ToDoList = ({ category }) => {
   const descriptionInputRef = useRef(null);
 
   useEffect(() => {
-    const filteredList = store(storageIndex).filter((item) => item.description.toLowerCase().includes(filter.toLowerCase()));
+    const filteredList = store(storageIndex).filter((item) =>
+      item.description.toLowerCase().includes(filter.toLowerCase())
+    );
     setList(filteredList);
   }, [filter, storageIndex]);
 
-  const onChange = ({ target: { value } }) => setCurrentTodo((prev) => ({ ...prev, description: value }));
+  const getVisualIndex = (index) => {
+    let visualIndex = 0;
+    for (let i = 0; i < index; i++) {
+      if (!list[i].finished || showCompleted) {
+        visualIndex++;
+      }
+    }
+    return visualIndex;
+  };
+
+  const onChange = ({ target: { value } }) =>
+    setCurrentTodo((prev) => ({ ...prev, description: value }));
 
   const trySubmit = (e) => (e.key === "Enter" ? save() : null);
 
@@ -98,9 +118,17 @@ const ToDoList = ({ category }) => {
     if (showFilter) setFilter("");
   };
 
+  const toggleShowCompleted = () => {
+    const newValue = !showCompleted;
+    setShowCompleted(newValue);
+    store(showCompletedKey, newValue);
+  };
+
   const save = () => {
     if (!currentTodo.description) return;
-    const updatedList = isEditing ? list.map((item) => (item.id === currentTodo.id ? currentTodo : item)) : [...list, { ...currentTodo, finished: false }];
+    const updatedList = isEditing
+      ? list.map((item) => (item.id === currentTodo.id ? currentTodo : item))
+      : [...list, { ...currentTodo, finished: false }];
     setList(updatedList);
     store(storageIndex, updatedList);
     clearForm();
@@ -139,26 +167,64 @@ const ToDoList = ({ category }) => {
 
       <div className={classNames(css.body, { [css.minimized]: isMinimized })}>
         <div className={css.form}>
-          <input className={css.description} ref={descriptionInputRef} type="text" placeholder="Add a new item" value={currentTodo.description} onChange={onChange} onKeyDown={trySubmit} />
+          <input
+            className={css.description}
+            ref={descriptionInputRef}
+            type="text"
+            placeholder="Add a new item"
+            value={currentTodo.description}
+            onChange={onChange}
+            onKeyDown={trySubmit}
+          />
           <button className={css.add} onClick={save}>
             <Icon name={isEditing ? "Edit" : "Add"} color="white" />
           </button>
           <div className={css.filter}>
-            {showFilter && <input type="text" placeholder="Filter" value={filter} onChange={({ target: { value } }) => setFilter(value)} />}
+            {showFilter && (
+              <input
+                type="text"
+                placeholder="Filter"
+                value={filter}
+                onChange={({ target: { value } }) => setFilter(value)}
+              />
+            )}
             <button onClick={toggleFilterVisibility}>
               <Icon name={showFilter ? "Close" : "FilterList"} color="white" />
+            </button>
+            <button onClick={toggleShowCompleted}>
+              <Icon name={showCompleted ? "Visibility" : "VisibilityOff"} color="white" />
             </button>
           </div>
         </div>
         <div className={css.items}>
-          {list.length > 0 && list.map((item, i) => <ToDoItem storageIndex={storageIndex} currentTodo={currentTodo} key={item.id} index={i} item={item} move={move} find={find} onToggleFinished={toggleFinished} onTogglePriority={togglePriority} edit={edit} remove={remove} />)}
+          {list.length > 0 &&
+            list.map(
+              (item, i) =>
+                (!item.finished || showCompleted) && (
+                  <ToDoItem
+                    storageIndex={storageIndex}
+                    currentTodo={currentTodo}
+                    key={item.id}
+                    index={i}
+                    visualIndex={getVisualIndex(i)}
+                    item={item}
+                    move={move}
+                    find={find}
+                    onToggleFinished={toggleFinished}
+                    onTogglePriority={togglePriority}
+                    edit={edit}
+                    remove={remove}
+                  />
+                )
+            )}
           {list.length <= 0 && <div className={css.empty}>No items</div>}
         </div>
         <ProgressBar
           progress={progress}
           label={
             <>
-              <b>{`${progress.current}`}</b> of <b>{`${progress.total}`}</b> tasks done <b>({progress.percent.toFixed()}%</b>)
+              <b>{`${progress.current}`}</b> of <b>{`${progress.total}`}</b> tasks done{" "}
+              <b>({progress.percent.toFixed()}%</b>)
             </>
           }
         />
