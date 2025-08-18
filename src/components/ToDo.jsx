@@ -21,21 +21,41 @@ const Todo = () => {
       color: "#E67E22",
       storageIndex: "tobuy",
     },
+    {
+      id: "8f64e44f-cc3b-4f25-b959-fc25a2710413",
+      name: "Car",
+      icon: "DirectionsCar",
+      color: "#2ECC71",
+      storageIndex: "car",
+    },
   ];
 
   const backup = () => {
-    categories.forEach((category) =>
-      store(`list-${category.storageIndex}-backup`, store(`list-${category.storageIndex}`))
-    );
+    const currentData = store("list") || {};
+    const backupData = { ...currentData };
+
+    categories.forEach((category) => {
+      if (!backupData[category.storageIndex]) {
+        backupData[category.storageIndex] = { list: [], backup: [], showCompleted: false };
+      }
+      backupData[category.storageIndex].backup = [...backupData[category.storageIndex].list];
+    });
+
+    store("list", backupData);
     console.warn("Backup done");
   };
 
   const restore = () => {
+    const backupData = store("list") || {};
+
     categories.forEach((category) => {
-      store(`list-${category.storageIndex}`, store(`list-${category.storageIndex}-backup`));
-      window.location.reload();
-      // setList(store(storageBackupIndex));
+      if (backupData[category.storageIndex]?.backup) {
+        backupData[category.storageIndex].list = [...backupData[category.storageIndex].backup];
+      }
     });
+
+    store("list", backupData);
+    window.location.reload();
     console.warn("Restore done");
   };
 

@@ -7,7 +7,7 @@ import store from "store2";
 import update from "immutability-helper";
 import classNames from "classnames";
 import ProgressBar from "./ProgressBar";
-import YearProgessBar from "./YearProgressBar";
+// import YearProgessBar from "./YearProgressBar";
 
 const ToDoList = ({ category }) => {
   const newTodo = () => ({
@@ -17,15 +17,18 @@ const ToDoList = ({ category }) => {
     priority: false,
   });
 
-  const storageIndex = `list-${category.storageIndex}`;
-  const showCompletedKey = `${storageIndex}-showCompleted`;
-
-  const [list, setList] = useState(store(storageIndex) || []);
+  const [list, setList] = useState(() => {
+    const allData = store("list") || {};
+    return allData[category.storageIndex]?.list || [];
+  });
   const [currentTodo, setCurrentTodo] = useState(newTodo());
   const [isEditing, setIsEditing] = useState(false);
   const [isMinimized, setIsMinimized] = useState(false);
   const [isClosed, setIsClosed] = useState(false);
-  const [showCompleted, setShowCompleted] = useState(store(showCompletedKey) ?? true);
+  const [showCompleted, setShowCompleted] = useState(() => {
+    const allData = store("list") || {};
+    return allData[category.storageIndex]?.showCompleted ?? true;
+  });
 
   const [filter, setFilter] = useState("");
   const [showFilter, setShowFilter] = useState(true);
@@ -33,16 +36,22 @@ const ToDoList = ({ category }) => {
   const descriptionInputRef = useRef(null);
 
   useEffect(() => {
-    const filteredList = store(storageIndex).filter((item) =>
+    const allData = store("list") || {};
+    const categoryData = allData[category.storageIndex] || {
+      list: [],
+      backup: [],
+      showCompleted: false,
+    };
+    const filteredList = categoryData.list.filter((item) =>
       item.description.toLowerCase().includes(filter.toLowerCase())
     );
     setList(filteredList);
-  }, [filter, storageIndex]);
+  }, [filter, category.storageIndex]);
 
   const getVisualIndex = (index) => {
     let visualIndex = 0;
     for (let i = 0; i < index; i++) {
-      if (!list[i].finished || showCompleted) {
+      if (list[i] && (!list[i].finished || showCompleted)) {
         visualIndex++;
       }
     }
@@ -70,7 +79,14 @@ const ToDoList = ({ category }) => {
     const updatedList = [...list];
     updatedList[index].finished = e.target.checked;
     setList(updatedList);
-    store(storageIndex, updatedList);
+
+    const allData = store("list") || {};
+    allData[category.storageIndex] = {
+      ...allData[category.storageIndex],
+      list: updatedList,
+    };
+    store("list", allData);
+
     clearForm();
   };
 
@@ -79,7 +95,13 @@ const ToDoList = ({ category }) => {
     const updatedList = [...list];
     updatedList[index].priority = !updatedList[index].priority;
     setList(updatedList);
-    store(storageIndex, updatedList);
+
+    const allData = store("list") || {};
+    allData[category.storageIndex] = {
+      ...allData[category.storageIndex],
+      list: updatedList,
+    };
+    store("list", allData);
   };
 
   const edit = (index, e) => {
@@ -87,14 +109,20 @@ const ToDoList = ({ category }) => {
     e.stopPropagation();
 
     descriptionInputRef.current.focus();
-    // setTimeout(() => descriptionInputRef.current.setSelectionRange(0, 0), 0);
 
     setIsEditing(true);
     setCurrentTodo({ ...list[index] });
   };
 
-  const move = (id, atIndex) => {
+  const move = (id, atIndex, sourceList) => {
     const { item, index } = find(id);
+
+    // If the item is from a different list, handle cross-list movement
+    if (sourceList && sourceList !== category.storageIndex) {
+      moveBetweenLists(id, sourceList);
+      return;
+    }
+
     const updatedList = update(list, {
       $splice: [
         [index, 1],
@@ -102,7 +130,49 @@ const ToDoList = ({ category }) => {
       ],
     });
     setList(updatedList);
-    store(storageIndex, updatedList);
+
+    const allData = store("list") || {};
+    allData[category.storageIndex] = {
+      ...allData[category.storageIndex],
+      list: updatedList,
+    };
+    store("list", allData);
+  };
+
+  const moveBetweenLists = (id, sourceList) => {
+    const allData = store("list") || {};
+    const sourceData = allData[sourceList];
+
+    if (!sourceData || !sourceData.list) return;
+
+    // Find the item in the source list
+    const sourceItem = sourceData.list.find((item) => item.id === id);
+    if (!sourceItem) return;
+
+    // Remove from source list
+    const updatedSourceList = sourceData.list.filter((item) => item.id !== id);
+
+    // Remove from current list if it exists (to prevent duplicates)
+    const updatedCurrentList = list.filter((item) => item.id !== id);
+
+    // Add to current list at the end
+    updatedCurrentList.push({ ...sourceItem });
+
+    // Update source list
+    allData[sourceList] = {
+      ...allData[sourceList],
+      list: updatedSourceList,
+    };
+
+    // Update current list
+    allData[category.storageIndex] = {
+      ...allData[category.storageIndex],
+      list: updatedCurrentList,
+    };
+
+    // Update both lists in storage
+    store("list", allData);
+    setList(updatedCurrentList);
   };
 
   const find = (id) => {
@@ -121,7 +191,13 @@ const ToDoList = ({ category }) => {
   const toggleShowCompleted = () => {
     const newValue = !showCompleted;
     setShowCompleted(newValue);
-    store(showCompletedKey, newValue);
+
+    const allData = store("list") || {};
+    allData[category.storageIndex] = {
+      ...allData[category.storageIndex],
+      showCompleted: newValue,
+    };
+    store("list", allData);
   };
 
   const save = () => {
@@ -130,7 +206,14 @@ const ToDoList = ({ category }) => {
       ? list.map((item) => (item.id === currentTodo.id ? currentTodo : item))
       : [...list, { ...currentTodo, finished: false }];
     setList(updatedList);
-    store(storageIndex, updatedList);
+
+    const allData = store("list") || {};
+    allData[category.storageIndex] = {
+      ...allData[category.storageIndex],
+      list: updatedList,
+    };
+    store("list", allData);
+
     clearForm();
   };
 
@@ -138,7 +221,14 @@ const ToDoList = ({ category }) => {
     e.stopPropagation();
     const updatedList = list.filter((_, i) => i !== index);
     setList(updatedList);
-    store(storageIndex, updatedList);
+
+    const allData = store("list") || {};
+    allData[category.storageIndex] = {
+      ...allData[category.storageIndex],
+      list: updatedList,
+    };
+    store("list", allData);
+
     clearForm();
   };
 
@@ -202,7 +292,7 @@ const ToDoList = ({ category }) => {
               (item, i) =>
                 (!item.finished || showCompleted) && (
                   <ToDoItem
-                    storageIndex={storageIndex}
+                    storageIndex={category.storageIndex}
                     currentTodo={currentTodo}
                     key={item.id}
                     index={i}
@@ -229,7 +319,7 @@ const ToDoList = ({ category }) => {
           }
         />
 
-        <YearProgessBar />
+        {/* <YearProgessBar /> */}
       </div>
     </div>
   );

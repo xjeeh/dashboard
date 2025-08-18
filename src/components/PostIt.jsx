@@ -20,6 +20,9 @@ export const PostIt = () => {
 
   const ref = useRef(null);
   const offset = useRef({ x: 0, y: 0 });
+  const isResizing = useRef(false);
+  const resizeStartPos = useRef({ x: 0, y: 0 });
+  const resizeStartSize = useRef({ width: 0, height: 0 });
 
   useEffect(() => {
     store.set(storeIndex, postIt);
@@ -44,7 +47,7 @@ export const PostIt = () => {
     offset.current.x = e.clientX - rect.left;
     offset.current.y = e.clientY - rect.top;
 
-    e.dataTransfer.setData("text/plain", "dragging");
+    e.dataTransfer.setData("text/plain", "");
 
     const img = new Image();
     img.src =
@@ -70,6 +73,42 @@ export const PostIt = () => {
     setPostIt((prev) => ({ ...prev, x: newX, y: newY }));
   };
 
+  const handleResizeStart = (e) => {
+    const rect = ref.current.getBoundingClientRect();
+    const edgeSize = 10; // tamanho da área de redimensionamento nas bordas
+
+    // Verifica se o clique foi nas bordas
+    const isNearRightEdge = e.clientX > rect.right - edgeSize;
+    const isNearBottomEdge = e.clientY > rect.bottom - edgeSize;
+
+    if (isNearRightEdge || isNearBottomEdge) {
+      isResizing.current = true;
+      resizeStartPos.current = { x: e.clientX, y: e.clientY };
+      resizeStartSize.current = { width: rect.width, height: rect.height };
+      e.preventDefault();
+    }
+  };
+
+  const handleResizeMove = (e) => {
+    if (!isResizing.current) return;
+
+    const deltaX = e.clientX - resizeStartPos.current.x;
+    const deltaY = e.clientY - resizeStartPos.current.y;
+
+    const newWidth = Math.max(200, resizeStartSize.current.width + deltaX);
+    const newHeight = Math.max(100, resizeStartSize.current.height + deltaY);
+
+    setPostIt((prev) => ({
+      ...prev,
+      width: `${newWidth}px`,
+      height: `${newHeight}px`,
+    }));
+  };
+
+  const handleResizeEnd = () => {
+    isResizing.current = false;
+  };
+
   const { x, y, isMinimized, isClosed, text, width, height } = postIt;
 
   return (
@@ -83,6 +122,10 @@ export const PostIt = () => {
       draggable="true"
       onDragStart={dragStart}
       onDrag={dragNote}
+      onMouseDown={handleResizeStart}
+      onMouseMove={handleResizeMove}
+      onMouseUp={handleResizeEnd}
+      onMouseLeave={handleResizeEnd}
     >
       <div className={css.windowActions} onClick={toggleMinimize}>
         <Icon name={isMinimized ? "Crop32" : "Minimize"} color="black" />

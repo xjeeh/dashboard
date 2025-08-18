@@ -177,14 +177,21 @@ const Diet = () => {
       const base = currentItem._base;
       const newQ = Number(value);
       const ratio = base && base.quantity ? newQ / base.quantity : 1;
+
+      // Helper function to format numbers
+      const formatNumber = (num) => {
+        const value = base ? num * ratio : num;
+        return Number.isInteger(value) ? value.toString() : value.toFixed(1);
+      };
+
       setCurrentItem((prev) => ({
         ...prev,
         quantity: value,
-        calories: base ? (base.calories * ratio).toFixed(2) : prev.calories,
-        protein: base ? (base.protein * ratio).toFixed(2) : prev.protein,
-        carb: base ? (base.carb * ratio).toFixed(2) : prev.carb,
-        fat: base ? (base.fat * ratio).toFixed(2) : prev.fat,
-        fiber: base ? (base.fiber * ratio).toFixed(2) : prev.fiber,
+        calories: base ? formatNumber(base.calories) : prev.calories,
+        protein: base ? formatNumber(base.protein) : prev.protein,
+        carb: base ? formatNumber(base.carb) : prev.carb,
+        fat: base ? formatNumber(base.fat) : prev.fat,
+        fiber: base ? formatNumber(base.fiber) : prev.fiber,
       }));
     } else {
       setCurrentItem((prevItem) => ({
@@ -293,86 +300,98 @@ const Diet = () => {
             <Icon name="ChevronLeft" color="white" />
           </button>
           <span className={css.selectedDate}>{selectedDate}</span>
-          {selectedDate !== getToday() && (
-            <button onClick={goToNextDay} className={css.dateNavButton} title="Próximo dia">
-              <Icon name="ChevronRight" color="white" />
-            </button>
-          )}
+          <button
+            onClick={goToNextDay}
+            className={css.dateNavButton}
+            title="Próximo dia"
+            style={{ visibility: selectedDate !== getToday() ? "visible" : "hidden" }}
+          >
+            <Icon name="ChevronRight" color="white" />
+          </button>
         </div>
-        <table className={css.tableWrapper}>
-          <thead>
-            <tr className={css.tableHeader}>
-              <th>Nome</th>
-              <th>Horário</th>
-              <th className={css.tableCellRight}>Qtd.</th>
-              <th className={css.tableCellRight}>Unidade</th>
-              <th className={css.tableCellRight}>Calorias</th>
-              <th className={css.tableCellRight}>Proteína</th>
-              <th className={css.tableCellRight}>Carb. Livre</th>
-              <th className={css.tableCellRight}>Gordura</th>
-              <th className={css.tableCellRight}>Fibra</th>
-              <th className={css.tableCellCenter}>Ações</th>
-            </tr>
-          </thead>
-          <tbody>
-            {list.map((item, index) => (
-              <DraggableRow key={item.id} index={index} moveRow={moveRow}>
-                <td className={css.tableCell}>{item.name}</td>
-                <td className={css.tableCell}>{item.time}</td>
-                <td className={`${css.tableCell} ${css.tableCellRight}`}>{item.quantity}</td>
-                <td className={`${css.tableCell} ${css.tableCellRight}`}>{item.unit}</td>
-                <td className={`${css.tableCell} ${css.tableCellRight}`}>{item.calories}</td>
-                <td className={`${css.tableCell} ${css.tableCellRight}`}>{item.protein}</td>
-                <td className={`${css.tableCell} ${css.tableCellRight}`}>{item.carb}</td>
-                <td className={`${css.tableCell} ${css.tableCellRight}`}>{item.fat}</td>
-                <td className={`${css.tableCell} ${css.tableCellRight}`}>{item.fiber}</td>
-                <td className={`${css.tableCell} ${css.tableCellCenter}`}>
-                  <button onClick={() => edit(item.id)} className={css.actionButton} title="Editar">
-                    <Icon name="Edit" color="#9ba8ea" />
-                  </button>
-                  <button
-                    onClick={() => duplicate(item.id)}
-                    className={css.actionButton}
-                    title="Duplicar"
-                  >
-                    <Icon name="ContentCopy" color="#9ba8ea" />
-                  </button>
-                  <button
-                    onClick={() => remove(item.id)}
-                    className={css.deleteButton}
-                    title="Remover"
-                  >
-                    <Icon name="Delete" color="#e74c3c" />
-                  </button>
+        <div className={css.tableWrapper}>
+          <table>
+            <thead>
+              <tr className={css.tableHeader}>
+                <th className={`${css.tableCell} ${css.tableCellLeft}`}>Nome</th>
+                <th className={css.tableCellCenter}>Horário</th>
+                <th className={css.tableCellCenter}>Qtd.</th>
+                <th className={css.tableCellCenter}>Unidade</th>
+                <th className={css.tableCellCenter}>Calorias</th>
+                <th className={css.tableCellCenter}>Proteína</th>
+                <th className={css.tableCellCenter}>Carb. Livre</th>
+                <th className={css.tableCellCenter}>Gordura</th>
+                <th className={css.tableCellCenter}>Fibra</th>
+                <th className={css.tableCellCenter}>Ações</th>
+              </tr>
+            </thead>
+            <tbody>
+              {list.map((item, index) => (
+                <DraggableRow key={item.id} index={index} moveRow={moveRow}>
+                  <td className={`${css.tableCell} ${css.tableCellLeft}`}>{item.name}</td>
+                  <td className={`${css.tableCell} ${css.tableCellCenter}`}>{item.time}</td>
+                  <td className={`${css.tableCell} ${css.tableCellCenter}`}>{item.quantity}</td>
+                  <td className={`${css.tableCell} ${css.tableCellCenter}`}>{item.unit}</td>
+                  <td className={`${css.tableCell} ${css.tableCellCenter}`}>{item.calories}</td>
+                  <td className={`${css.tableCell} ${css.tableCellCenter}`}>{item.protein}</td>
+                  <td className={`${css.tableCell} ${css.tableCellCenter}`}>{item.carb}</td>
+                  <td className={`${css.tableCell} ${css.tableCellCenter}`}>{item.fat}</td>
+                  <td className={`${css.tableCell} ${css.tableCellCenter}`}>{item.fiber}</td>
+                  <td className={`${css.tableCell} ${css.tableCellCenter}`}>
+                    <button
+                      onClick={() => edit(item.id)}
+                      className={css.actionButton}
+                      title="Editar"
+                    >
+                      <Icon name="Edit" color="#9ba8ea" />
+                    </button>
+                    <button
+                      onClick={() => duplicate(item.id)}
+                      className={css.actionButton}
+                      title="Duplicar"
+                    >
+                      <Icon name="ContentCopy" color="#9ba8ea" />
+                    </button>
+                    <button
+                      onClick={() => remove(item.id)}
+                      className={css.deleteButton}
+                      title="Remover"
+                    >
+                      <Icon name="Delete" color="#e74c3c" />
+                    </button>
+                  </td>
+                </DraggableRow>
+              ))}
+            </tbody>
+            <tfoot>
+              <tr style={{ background: "#2f2f2f", fontWeight: 700 }}>
+                <td
+                  className={`${css.tableCell} ${css.tableCellLeft}`}
+                  style={{ color: "#9ba8ea" }}
+                >
+                  Total
                 </td>
-              </DraggableRow>
-            ))}
-          </tbody>
-          <tfoot>
-            <tr style={{ background: "#2f2f2f", fontWeight: 700 }}>
-              <td className={css.tableCellRight} style={{ color: "#9ba8ea" }}>
-                Total
-              </td>
-              <td colSpan={3}></td>
-              <td className={css.tableCellRight} style={{ color: "#78b1b8", fontSize: 16 }}>
-                {totalCalories}
-              </td>
-              <td className={css.tableCellRight} style={{ color: "#78b1b8", fontSize: 16 }}>
-                {totalProtein}
-              </td>
-              <td className={css.tableCellRight} style={{ color: "#78b1b8", fontSize: 16 }}>
-                {totalCarb}
-              </td>
-              <td className={css.tableCellRight} style={{ color: "#78b1b8", fontSize: 16 }}>
-                {totalFat}
-              </td>
-              <td className={css.tableCellRight} style={{ color: "#78b1b8", fontSize: 16 }}>
-                {totalFiber}
-              </td>
-              <td></td>
-            </tr>
-          </tfoot>
-        </table>
+                <td colSpan={3}></td>
+                <td className={css.tableCellCenter} style={{ color: "#78b1b8", fontSize: 16 }}>
+                  {totalCalories}
+                </td>
+                <td className={css.tableCellCenter} style={{ color: "#78b1b8", fontSize: 16 }}>
+                  {totalProtein}
+                </td>
+                <td className={css.tableCellCenter} style={{ color: "#78b1b8", fontSize: 16 }}>
+                  {totalCarb}
+                </td>
+                <td className={css.tableCellCenter} style={{ color: "#78b1b8", fontSize: 16 }}>
+                  {totalFat}
+                </td>
+                <td className={css.tableCellCenter} style={{ color: "#78b1b8", fontSize: 16 }}>
+                  {totalFiber}
+                </td>
+                <td></td>
+              </tr>
+            </tfoot>
+          </table>
+        </div>
         <form
           onSubmit={(e) => {
             e.preventDefault();

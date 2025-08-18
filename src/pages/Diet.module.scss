@@ -47,27 +47,40 @@
   transition: all 0.2s;
   min-width: 120px;
   text-align: center;
+  user-select: none;
 }
 
 .tableWrapper {
   width: 100%;
-  border-collapse: separate;
-  border-spacing: 0;
   background: #393c5a;
   border-radius: 12px;
-  overflow: hidden;
+  overflow-y: auto;
+  min-height: 400px;
+  max-height: 400px;
   box-shadow: 0 1px 4px #0002;
   color: white;
 }
 
-.tableHeader {
+table {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0;
+}
+
+.tableHeader th {
+  position: sticky;
+  top: 0;
   background: #23243a;
-  color: #9ba8ea;
+  z-index: 2;
+}
+
+.tableBody {
+  overflow-y: auto;
+  flex: 1;
 }
 
 .tableHeader th {
   padding: 10px 8px;
-  text-align: left;
   font-weight: 700;
 }
 
@@ -98,6 +111,10 @@
 
 .tableCellCenter {
   text-align: center;
+}
+
+.tableCellLeft {
+  text-align: left;
 }
 
 .actionButton {
@@ -192,10 +209,4 @@
 }
 .cancelButton:hover {
   background: #cfd8ee;
-}
-
-// Primeira coluna (Nome) alinhada à esquerda
-.tableRow td:first-child,
-.tableHeader th:first-child {
-  text-align: left;
 }

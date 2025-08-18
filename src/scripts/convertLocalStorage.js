@@ -1,0 +1,406 @@
+// Script to convert localStorage dump to current format
+const convertLocalStorage = () => {
+  // Original dump data
+  const toBuyList = [
+    {
+      id: "24fafcc2-be66-4977-8619-337bc3f4a8e5",
+      description: "Escritório: Clonador tag mais profissa (ou USB)",
+      finished: true,
+      priority: true,
+    },
+    {
+      id: "41bf3269-c67e-4b33-bf1c-da783367df08",
+      description: "Escritório 2: Cartucho impressora",
+      finished: false,
+      priority: false,
+    },
+    {
+      id: "469a3427-a7ff-44a1-b25d-c36f057c9dcf",
+      description: "Spray Cinza Grafite (tramontina)",
+      finished: true,
+      priority: false,
+    },
+    {
+      id: "35bd92c0-76a3-4b29-955e-f7e703566733",
+      description: "Gatos: pote de comida pequeno p/ sachê",
+      finished: true,
+      priority: true,
+    },
+    {
+      id: "634a57fe-3269-4b2e-a6c6-6e37cdc9a6ae",
+      description: "Gatos: Pote com tampa p/ guardar sachê aberto",
+      finished: true,
+      priority: true,
+    },
+    {
+      id: "42549e3d-18ad-4cbb-9c8f-2d742465f82e",
+      order: 6,
+      description: "Kit reparo descarga",
+      finished: true,
+      priority: true,
+    },
+    {
+      id: "9e045f3b-5d04-4caa-829b-de0b3f1977a2",
+      order: 4,
+      description: "Lente de Contato",
+      finished: true,
+      priority: true,
+    },
+    {
+      id: "74af135f-13f1-410a-b261-124d79761f2e",
+      order: 1,
+      description: "Bicarbonáto de Sódio (5kg)",
+      finished: true,
+      priority: true,
+    },
+    {
+      id: "0eba1c56-45da-440b-b218-71490bc91809",
+      order: 2,
+      description: "Sacola Grande",
+      finished: true,
+      priority: true,
+    },
+    {
+      id: "6a705109-ceb7-4be0-a1c7-379b818114a9",
+      order: 7,
+      description: "Lixa 1000",
+      finished: true,
+      priority: true,
+    },
+    {
+      id: "56be0c28-f704-49d1-948a-92186465b18f",
+      order: 8,
+      description: "Cleyton Novo (1200)",
+      finished: false,
+      priority: false,
+    },
+    {
+      id: "a27da522-629b-403b-af1d-fe44f26816d3",
+      order: 3,
+      description: "Cozinha: Sacola Lixinho Pequena",
+      finished: false,
+      priority: false,
+    },
+    {
+      id: "b1404239-a2f8-4f26-9bb8-dbeabdc9bc09",
+      order: 8,
+      description: "Quarto: Cama Nova (queen) [Valor antigo: R$4700]",
+      finished: false,
+      priority: false,
+    },
+    {
+      id: "cb791862-4d0d-4e8d-806b-eeb1e8db6477",
+      order: 9,
+      description: "Quarto: Travesseiros Novos",
+      finished: false,
+      priority: false,
+    },
+    {
+      id: "7f33343a-bec8-45f6-b7f3-f302d377cf4a",
+      order: 10,
+      description: "15x Spray Preto Fosco",
+      finished: true,
+      priority: false,
+    },
+    {
+      id: "b28a422a-aba2-4ac6-8568-7fd632d352ac",
+      order: 11,
+      description: "Tapete Escorredor Cozinha",
+      finished: true,
+      priority: false,
+    },
+    {
+      id: "6088a0fe-554c-4885-a2d8-604df58931c5",
+      order: 13,
+      description: "Firestick 4k",
+      finished: true,
+      priority: false,
+    },
+    {
+      id: "44a5117e-cc4b-4016-9f9e-2eb6e6edf76a",
+      order: 14,
+      description: "Soldador de plástico",
+      finished: false,
+      priority: false,
+    },
+    {
+      id: "827cf731-c597-4148-8a78-45fe9ac0c35f",
+      description: "Cozinha: Microondas Novo",
+      finished: false,
+      priority: false,
+    },
+    {
+      id: "20cc1786-2d27-428d-9a11-a06beb90f891",
+      description: "Banheiro: Box Pia",
+      finished: false,
+      priority: true,
+    },
+    {
+      id: "c391417a-50d5-48d9-9143-c6bb69805736",
+      description: "Banheiro: Armário Pia",
+      finished: false,
+      priority: false,
+    },
+    {
+      id: "24ba41b3-d8bf-45d7-9cfb-c5ac15063e9d",
+      description: "Sala: Vaso planta grande",
+      finished: true,
+      priority: false,
+    },
+    {
+      id: "8bc33ca4-9b75-496f-bf52-7f8d964c6817",
+      description: "Escritório 2: Guilhotina de mesa (A4)",
+      finished: false,
+      priority: false,
+    },
+    {
+      id: "a993e63d-d106-41a3-9f29-21b8eff50517",
+      description: "Escritório 2: Silhouette (?)",
+      finished: false,
+      priority: false,
+    },
+    {
+      id: "4c50d552-1a96-4a2f-ad53-bcdbbb81041f",
+      description: "Verniz brilhante",
+      finished: false,
+      priority: false,
+    },
+    {
+      id: "a64900be-7268-4388-b229-a1eb0220ce8e",
+      description: "Canetinha Colorida",
+      finished: true,
+      priority: false,
+    },
+  ];
+
+  const toDoList = [
+    {
+      id: "a168f923-6f8b-40ca-a7d1-c3d211f9d511",
+      description: "Cozinha: Interfone: Adaptar antena wifi",
+      finished: true,
+      priority: true,
+    },
+    {
+      id: "f5a94877-7ee9-44bd-88d2-fc9281de8b39",
+      description: "Sistema: Esconder concluídos",
+      finished: true,
+      priority: true,
+    },
+    {
+      id: "c4f93ca3-13a0-41e1-9589-6dab39278e27",
+      description: "Sistema: esconder completed",
+      finished: true,
+      priority: true,
+    },
+    {
+      id: "b0f8b537-30fc-4dfd-b198-43b9be4229fe",
+      description: "Hall 2: Ziper no Cleytinho",
+      finished: true,
+      priority: true,
+    },
+    {
+      id: "7c8192bb-36e6-4be3-80fd-4bd316c00b9b",
+      description: "Sistema: ToDo: Right Click: Move to Top/Bottom",
+      finished: false,
+      priority: true,
+    },
+    {
+      id: "acad1a42-d631-45ad-9110-696622d53b8c",
+      description: "Escritório: Mouse double click",
+      finished: true,
+      priority: true,
+    },
+    {
+      id: "22c5b4e1-8687-422e-806e-c8d4d4dbab09",
+      description: "Sistema: ToDo: Arrumar ordenação",
+      finished: true,
+      priority: true,
+    },
+    {
+      id: "1221c055-bff3-4535-8326-cbd57f7ea5dd",
+      order: 36,
+      description: "Energia: identificar fuga / gasto elevado",
+      finished: true,
+      priority: true,
+    },
+    {
+      id: "24f4b2f3-834c-4b99-8f26-a942bcaffe73",
+      description: "Cleytinho: Tampa do reservatório de pó (colocar dobradiça)",
+      finished: false,
+      priority: true,
+    },
+    {
+      id: "734231b1-2257-4651-b20f-16e32bafa647",
+      order: 8,
+      description: "Notebook: Seu Alberto",
+      finished: true,
+      priority: true,
+    },
+    {
+      id: "f11ecb6b-4543-4c9a-9aed-7693d68e5499",
+      description: "Escritório: Guardar caixinhas da prateleira antiga do modem",
+      finished: true,
+      priority: false,
+    },
+    {
+      id: "47dff4a8-db20-471d-8110-157c1ee906a5",
+      order: 23,
+      description: "Cortar Cabelo",
+      finished: true,
+      priority: true,
+    },
+    {
+      id: "29cb0d1d-8af2-4acb-b0dd-d7c9eeb76e4b",
+      order: 14,
+      description: "Descarga Banheiro Vazando",
+      finished: true,
+      priority: true,
+    },
+    {
+      id: "aab93318-59a8-4a1b-a28d-dd027271b21c",
+      order: 15,
+      description: "Quarto: Arrumar ventilador (rotação)",
+      finished: false,
+      priority: true,
+    },
+    {
+      id: "04bd6273-5d1e-47c7-9d4f-1ce6f6b84d6d",
+      order: 24,
+      description: "Lavar Grade Exaustor",
+      finished: true,
+      priority: false,
+    },
+    {
+      id: "985440ff-8297-49be-a07a-f9b182aa1804",
+      order: 33,
+      description: "Cozinha: Trocar gancho pano de prato",
+      finished: true,
+      priority: false,
+    },
+    {
+      id: "a7eaf7fa-ff59-4efb-a9e5-626fd250736a",
+      order: 34,
+      description: "Sala: Arrumar Cortina",
+      finished: false,
+      priority: false,
+    },
+    {
+      id: "ef3eb288-02fa-4490-b5ab-dd808f6f9324",
+      order: 6,
+      description: "Microfone: arrumar braço",
+      finished: false,
+      priority: true,
+    },
+    {
+      id: "391420d5-4d87-48b1-8f42-005bed825133",
+      description: "Microfone: Diminuir elástico",
+      finished: false,
+      priority: false,
+    },
+    {
+      id: "116594ee-09b8-4c68-8852-122b846e9860",
+      order: 32,
+      description: "Notebook: Filho do Seu Alberto",
+      finished: false,
+      priority: false,
+    },
+    {
+      id: "da63c24d-8838-4f8d-9f35-bc14499ee6b5",
+      order: 21,
+      description: "Atualizar iOS",
+      finished: true,
+      priority: false,
+    },
+    {
+      id: "f9288ef1-b6af-44cf-a79f-ee49075373b4",
+      order: 28,
+      description: "Cleytinho: Fazer Rampa para voltar da Área de Serviço",
+      finished: true,
+      priority: true,
+    },
+    {
+      id: "7f3ce3b0-66e0-413f-9545-c9f443203375",
+      order: 35,
+      description: "Cleytinho: Organizar sala para adicionar na limpeza",
+      finished: true,
+      priority: true,
+    },
+    {
+      id: "9cdf5be7-d7dd-47dc-901c-3cbe41353764",
+      order: 23,
+      description: "Cavaletinho Gouvea",
+      finished: true,
+      priority: false,
+    },
+    {
+      id: "954ebd64-75e6-4334-bbae-0944091bbc82",
+      order: 0,
+      description: "Sistema: ToDo",
+      finished: true,
+    },
+    {
+      id: "cca9e634-4e80-4ff6-bfd2-b71971b2b735",
+      order: 26,
+      description: "Sistema: Agenda/Calendário",
+      finished: true,
+      priority: false,
+    },
+    {
+      id: "66b59eef-7a3d-4b16-aeba-94730fddd996",
+      order: 2,
+      description: "Sistema: Dieta",
+      finished: true,
+    },
+    {
+      id: "ec1edbed-816b-4190-8b0f-ed838b725e06",
+      order: 12,
+      description: "Escritório: Arrumar fios PC & Canaleta",
+      finished: false,
+    },
+    {
+      id: "44c8df58-ac94-405e-8b9c-bb043602c3cd",
+      order: 22,
+      description: "Cozinha: Colocar prateleira (Interfone & Alexa)",
+      finished: false,
+    },
+    {
+      id: "72870001-4023-42d8-a52a-0da2c4d5246e",
+      order: 21,
+      description: "Cozinha: Arrumar fios balcão",
+      finished: true,
+    },
+    {
+      id: "67ec937c-7316-44e7-9370-8601793381e5",
+      order: 10,
+      description: "Quarto: Degraus Gatos",
+      finished: false,
+    },
+    { id: "74582adf-7b84-4cdd-b125-784de4f" },
+  ];
+
+  // Convert to new format
+  const newFormat = {
+    todo: {
+      list: toDoList,
+      backup: [...toDoList],
+      showCompleted: false,
+    },
+    tobuy: {
+      list: toBuyList,
+      backup: [...toBuyList],
+      showCompleted: false,
+    },
+    car: {
+      list: [],
+      backup: [],
+      showCompleted: false,
+    },
+  };
+
+  // Save to localStorage
+  localStorage.setItem("list", JSON.stringify(newFormat));
+  console.log("LocalStorage converted successfully!");
+};
+
+// Execute the conversion
+convertLocalStorage();

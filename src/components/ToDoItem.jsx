@@ -24,8 +24,8 @@ const ToDoItem = ({
 
   const [{ isDragging }, drag] = useDrag(
     () => ({
-      type: storageIndex,
-      item: { id, originalIndex },
+      type: "ITEM",
+      item: { id, originalIndex, sourceList: storageIndex },
       collect: (monitor) => ({
         isDragging: monitor.isDragging(),
       }),
@@ -37,16 +37,16 @@ const ToDoItem = ({
         }
       },
     }),
-    [id, originalIndex, move]
+    [id, originalIndex, move, storageIndex]
   );
 
   const [, drop] = useDrop(
     () => ({
-      accept: storageIndex,
-      hover({ id: draggedId }) {
+      accept: "ITEM",
+      hover({ id: draggedId, sourceList }) {
         if (draggedId !== id) {
           const { index: overIndex } = find(id);
-          move(draggedId, overIndex);
+          move(draggedId, overIndex, sourceList);
         }
       },
     }),
