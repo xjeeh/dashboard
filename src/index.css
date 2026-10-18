@@ -70,3 +70,55 @@ button {
   border: none;
   border-radius: 4px;
 }
+
+/* CSS global para inputs do mindmap */
+.mindmap-tree input,
+.mindmap-tree input[type="text"],
+.mindmap-tree textarea,
+.mindmap-tree [contenteditable="true"],
+.mindmap-tree input:focus,
+.mindmap-tree input[type="text"]:focus,
+.mindmap-tree textarea:focus,
+.mindmap-tree [contenteditable="true"]:focus {
+  background-color: #3b3b3b !important;
+  color: white !important;
+  border: 1px solid #5c5c5c !important;
+  border-radius: 4px !important;
+  padding: 4px 8px !important;
+  font-size: 14px !important;
+  outline: none !important;
+  box-sizing: border-box !important;
+}
+
+.mindmap-tree input:focus,
+.mindmap-tree input[type="text"]:focus,
+.mindmap-tree textarea:focus,
+.mindmap-tree [contenteditable="true"]:focus {
+  border-color: #3498db !important;
+  box-shadow: 0 0 0 2px rgba(52, 152, 219, 0.2) !important;
+}
+
+/* CSS para textos do mindmap */
+.mindmap-tree .node-text,
+.mindmap-tree .node-label,
+.mindmap-tree text,
+.mindmap-tree .text,
+.mindmap-tree .label {
+  color: white !important;
+  fill: white !important;
+}
+
+/* CSS para elementos editáveis do mindmap */
+.mindmap-tree .node-input,
+.mindmap-tree .editable-text,
+.mindmap-tree .editable,
+.mindmap-tree [contenteditable="true"] {
+  background-color: #3b3b3b !important;
+  color: white !important;
+}
+
+/* CSS para elementos SVG do mindmap */
+.mindmap-tree svg text {
+  fill: white !important;
+  color: white !important;
+}

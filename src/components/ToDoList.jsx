@@ -7,11 +7,12 @@ import store from "store2";
 import update from "immutability-helper";
 import classNames from "classnames";
 import ProgressBar from "./ProgressBar";
+import { v4 as uuidv4 } from "uuid";
 // import YearProgessBar from "./YearProgressBar";
 
 const ToDoList = ({ category }) => {
   const newTodo = () => ({
-    id: crypto.randomUUID(),
+    id: uuidv4(),
     description: "",
     finished: false,
     priority: false,
@@ -43,7 +44,7 @@ const ToDoList = ({ category }) => {
       showCompleted: false,
     };
     const filteredList = categoryData.list.filter((item) =>
-      item.description.toLowerCase().includes(filter.toLowerCase())
+      item.description.toLowerCase().includes(filter.toLowerCase()),
     );
     setList(filteredList);
   }, [filter, category.storageIndex]);
@@ -242,10 +243,10 @@ const ToDoList = ({ category }) => {
     total: list.length,
   };
 
-  progress.percent = (progress.current / progress.total) * 100;
+  progress.percent = progress.total === 0 ? 100 : (progress.current / progress.total) * 100;
 
   return (
-    <div className={classNames(css.list, { [css.closed]: isClosed })}>
+    <div className={classNames(css.list, { [css.closed]: isClosed, [css.minimized]: isMinimized })}>
       <div className={css.category} onClick={toggleMinimize} style={{ color: category.color }}>
         <Icon name={category.icon} color="white" />
         <span>{category.name}</span>
@@ -305,7 +306,7 @@ const ToDoList = ({ category }) => {
                     edit={edit}
                     remove={remove}
                   />
-                )
+                ),
             )}
           {list.length <= 0 && <div className={css.empty}>No items</div>}
         </div>

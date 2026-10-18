@@ -17,6 +17,10 @@
       display: none;
     }
 
+    &.minimized {
+      width: 145px;
+    }
+
     .category {
       display: flex;
       padding: 2.5px 5px;

@@ -1,45 +1,86 @@
 .wrapper {
-    position: fixed;
-    top: 50px;
-    left: 0px;
-    width: 300px;
-    height: 200px;
-    display: flex;
-    background: rgb(255, 212, 92);
+  position: fixed;
+  top: 50px;
+  left: 0px;
+  width: 300px;
+  height: 200px;
+  display: flex;
+  background: rgb(255, 212, 92);
+  color: black;
+  flex-direction: column;
+  padding: 5px 10px;
+  overflow: hidden;
+  min-width: 200px;
+  min-height: 150px;
+  resize: both;
+  user-select: none;
+
+  &.closed {
+    display: none;
+  }
+
+  &.minimized {
+    display: none !important; // Esconde completamente o componente quando minimizado
+  }
+
+  .windowActions {
+    text-align: right;
+    cursor: pointer;
+  }
+
+  textarea {
+    width: 100%;
+    height: 100%;
+    border: none;
+    background: transparent;
     color: black;
-    flex-direction: column;
-    padding: 5px 10px;
-    overflow: hidden;
-    min-width: 200px;
-    min-height: 150px;
-    resize: both;
+    font-size: 16px;
+    resize: none;
+    outline: none;
+    font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+    user-select: text;
+    cursor: text;
+  }
+}
 
-    &.closed {
-        display: none;
-    }
+.taskbar {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: 40px;
+  background: #1a1a1a;
+  display: flex;
+  align-items: center;
+  padding: 0 8px;
+  box-shadow: 0 -2px 8px rgba(0, 0, 0, 0.2);
+  z-index: 9999;
+}
 
-    &.minimized {
-        width: 30px;
-        height: 30px;
-        overflow: hidden;
-        padding: 0;
-        resize: none;
-    }
+.taskbarItem {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 4px 12px;
+  background: #2d2d2d;
+  border-radius: 4px;
+  cursor: pointer;
+  color: white;
+  font-size: 13px;
+  transition: all 0.2s ease;
+  border: 1px solid transparent;
 
-    .windowActions {
-        text-align: right;
-        cursor: pointer;
-    }
+  &:hover {
+    background: #3d3d3d;
+  }
 
-    textarea {
-        width: 100%;
-        height: 100%;
-        border: none;
-        background: transparent;
-        color: black;
-        font-size: 16px;
-        resize: none;
-        outline: none;
-        font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
-    }
+  &.active {
+    background: #3d3d3d;
+    border-color: #6366f1;
+  }
+
+  svg {
+    width: 16px;
+    height: 16px;
+  }
 }

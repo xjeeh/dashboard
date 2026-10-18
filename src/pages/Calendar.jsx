@@ -5,6 +5,7 @@ import "react-calendar/dist/Calendar.css";
 import React, { useState } from "react";
 import dayjs from "dayjs";
 import store from "store2";
+import { v4 as uuidv4 } from "uuid";
 
 // Novo: chave única para todos os eventos do calendário
 const CALENDAR_ALL_KEY = "calendar-all";
@@ -32,7 +33,7 @@ export const CalendarPage = () => {
   const [events, setEvents] = useState(getEventsForDate(dayjs(new Date()).format("YYYY-MM-DD")));
   const [visible, setVisible] = useState(() => {
     const stored = store.get("calendar-visible");
-    return typeof stored === "boolean" ? stored : true;
+    return typeof stored === "boolean" ? stored : false;
   });
 
   const categories = [
@@ -57,7 +58,7 @@ export const CalendarPage = () => {
   const handleAddEvent = (e) => {
     e.preventDefault();
     if (!desc || !category) return;
-    const newEvent = { id: crypto.randomUUID(), desc, category };
+    const newEvent = { id: uuidv4(), desc, category };
     const updated = [...events, newEvent];
     setEventsForDate(dateKey, updated);
     setEvents(updated);

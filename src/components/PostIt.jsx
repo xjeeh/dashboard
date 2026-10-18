@@ -1,22 +1,21 @@
-import { useEffect, useRef, useState } from "react";
+import { useRef } from "react";
 import { Icon } from "./Icon";
 import css from "./PostIt.module.scss";
 import classNames from "classnames";
-import store from "store2";
+import { useWindow } from "../contexts/WindowContext";
+import { useWindowState } from "../hooks/useWindowState";
 
 export const PostIt = () => {
   const storeIndex = "postIt-daily";
-  const [postIt, setPostIt] = useState(
-    store.get(storeIndex) || {
-      x: "0px",
-      y: "50px",
-      width: "300px",
-      height: "200px",
-      isMinimized: false,
-      isClosed: false,
-      text: "",
-    }
-  );
+  const [postIt, setPostIt] = useWindowState(storeIndex, {
+    x: "0px",
+    y: "50px",
+    width: "300px",
+    height: "200px",
+    isMinimized: false,
+    isClosed: false,
+    text: "",
+  });
 
   const ref = useRef(null);
   const offset = useRef({ x: 0, y: 0 });
@@ -24,13 +23,23 @@ export const PostIt = () => {
   const resizeStartPos = useRef({ x: 0, y: 0 });
   const resizeStartSize = useRef({ width: 0, height: 0 });
 
-  useEffect(() => {
-    store.set(storeIndex, postIt);
-  }, [postIt]);
+  const { addMinimizedWindow, removeMinimizedWindow } = useWindow();
 
   const toggleMinimize = (e) => {
     e.stopPropagation();
-    setPostIt((prev) => ({ ...prev, isMinimized: !prev.isMinimized }));
+    const newIsMinimized = !postIt.isMinimized;
+    setPostIt((prev) => ({ ...prev, isMinimized: newIsMinimized }));
+
+    if (newIsMinimized) {
+      addMinimizedWindow({
+        id: "postit",
+        type: "postit",
+        title: "Post-it",
+        isMinimized: true,
+      });
+    } else {
+      removeMinimizedWindow("postit");
+    }
   };
 
   const close = (e) => {
@@ -38,11 +47,24 @@ export const PostIt = () => {
     setPostIt((prev) => ({ ...prev, isClosed: !prev.isClosed }));
   };
 
-  const handleSetText = ({ target }) => {
-    setPostIt((prev) => ({ ...prev, text: target.value }));
+  const handleSetText = (e) => {
+    const newText = e.target.value;
+    setPostIt((prev) => ({ ...prev, text: newText }));
+  };
+
+  const handleKeyDown = (e) => {
+    if (e.key === "Backspace" || e.key === "Delete") {
+      e.stopPropagation();
+    }
   };
 
   const dragStart = (e) => {
+    // Only start drag if we're not clicking on the textarea
+    if (e.target.tagName.toLowerCase() === "textarea") {
+      e.preventDefault();
+      return;
+    }
+
     const rect = ref.current.getBoundingClientRect();
     offset.current.x = e.clientX - rect.left;
     offset.current.y = e.clientY - rect.top;
@@ -112,26 +134,37 @@ export const PostIt = () => {
   const { x, y, isMinimized, isClosed, text, width, height } = postIt;
 
   return (
-    <div
-      ref={ref}
-      style={{ left: x, top: y, width: width, height: height }}
-      className={classNames(css.wrapper, {
-        [css.minimized]: isMinimized,
-        [css.closed]: isClosed,
-      })}
-      draggable="true"
-      onDragStart={dragStart}
-      onDrag={dragNote}
-      onMouseDown={handleResizeStart}
-      onMouseMove={handleResizeMove}
-      onMouseUp={handleResizeEnd}
-      onMouseLeave={handleResizeEnd}
-    >
-      <div className={css.windowActions} onClick={toggleMinimize}>
-        <Icon name={isMinimized ? "Crop32" : "Minimize"} color="black" />
-        <Icon name="Close" color="red" onClick={() => close()} />
+    <>
+      <div
+        ref={ref}
+        style={{ left: x, top: y, width: width, height: height }}
+        className={classNames(css.wrapper, {
+          [css.minimized]: isMinimized,
+          [css.closed]: isClosed,
+        })}
+        onMouseDown={handleResizeStart}
+        onMouseMove={handleResizeMove}
+        onMouseUp={handleResizeEnd}
+        onMouseLeave={handleResizeEnd}
+      >
+        <div
+          className={css.windowActions}
+          onClick={toggleMinimize}
+          draggable="true"
+          onDragStart={dragStart}
+          onDrag={dragNote}
+        >
+          <Icon name={isMinimized ? "Crop32" : "Minimize"} color="black" />
+          <Icon name="Close" color="red" onClick={() => close()} />
+        </div>
+        <textarea
+          value={text}
+          onChange={handleSetText}
+          onKeyDown={handleKeyDown}
+          spellCheck="false"
+          style={{ resize: "none" }}
+        ></textarea>
       </div>
-      <textarea value={text} onChange={handleSetText} spellCheck="false"></textarea>
-    </div>
+    </>
   );
 };

@@ -1,0 +1,281 @@
+.wrapper {
+  position: fixed;
+  top: 100px;
+  left: 100px;
+  width: 600px;
+  height: 500px;
+  display: flex;
+  background: #2c3e50;
+  color: white;
+  flex-direction: column;
+  padding: 5px 10px;
+  overflow: hidden;
+  min-width: 400px;
+  min-height: 300px;
+  resize: both;
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+
+  &.closed {
+    display: none;
+  }
+
+  &.minimized {
+    display: none !important; // Esconde completamente o componente quando minimizado
+  }
+
+  .windowActions {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 5px 0;
+    border-bottom: 1px solid #34495e;
+    margin-bottom: 10px;
+
+    .title {
+      font-weight: bold;
+      font-size: 14px;
+      color: #ecf0f1;
+      cursor: default;
+    }
+
+    .windowButtons {
+      display: flex;
+      gap: 8px;
+      align-items: center;
+
+      :global(svg) {
+        cursor: pointer;
+        transition: transform 0.2s ease;
+
+        &:hover {
+          transform: scale(1.1);
+        }
+      }
+    }
+  }
+
+  .mindmapWrapper {
+    flex: 1;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+    position: relative;
+  }
+
+  .mindmapContainer {
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+    background: #34495e;
+    border-radius: 4px;
+    position: relative;
+  }
+
+  // Estilos para o React Flow
+  :global(.react-flow__node) {
+    cursor: pointer;
+  }
+
+  :global(.react-flow__controls) {
+    background: rgba(44, 62, 80, 0.9);
+    border-radius: 4px;
+  }
+
+  :global(.react-flow__controls button) {
+    background: #34495e;
+    border: 1px solid #2c3e50;
+    color: white;
+  }
+
+  :global(.react-flow__controls button:hover) {
+    background: #4a5f7a;
+  }
+
+  :global(.react-flow__minimap) {
+    background: rgba(44, 62, 80, 0.9);
+    border-radius: 4px;
+  }
+
+  :global(.react-flow__background) {
+    background: #34495e;
+  }
+
+  :global(.react-flow__edge) {
+    path {
+      stroke-width: 2;
+      // A cor do stroke será definida dinamicamente via JS
+    }
+  }
+
+  // Estilos para os handles (mantidos invisíveis, apenas para conexões)
+  :global(.react-flow__handle) {
+    width: 0;
+    height: 0;
+    background: transparent;
+    border: none;
+    pointer-events: none;
+  }
+}
+
+.customNode {
+  min-width: 60px;
+  cursor: pointer;
+  position: relative;
+  color: #e2e8f0; // Cor clara para todos os textos
+  user-select: none; // Prevenir seleção indesejada
+
+  &.boxStyle {
+    background: #6366f1;
+    border: 2px solid #4f46e5;
+    border-radius: 4px;
+  }
+
+  &.labelStyle {
+    background: none;
+    border: none;
+    font-weight: bold;
+  }
+
+  .addChildButton,
+  .toggleStyleButton,
+  .deleteButton {
+    position: absolute;
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    background: #6366f1;
+    color: white;
+    border: 2px solid white;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 12px;
+    font-weight: bold;
+    z-index: 100;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+    transition: all 0.2s ease;
+
+    &:hover {
+      background: #5a5fdb;
+      transform: scale(1.1);
+    }
+
+    &:active {
+      transform: scale(0.95);
+    }
+  }
+
+  .addChildButton {
+    top: -8px;
+    right: -8px;
+  }
+
+  .toggleStyleButton {
+    bottom: -8px;
+    right: -8px;
+  }
+
+  .deleteButton {
+    top: -8px;
+    left: -8px;
+    background: #ef4444;
+
+    &:hover {
+      background: #dc2626;
+    }
+  }
+}
+
+.nodeContent {
+  position: relative;
+  z-index: 1;
+}
+
+.nodeInput {
+  background: transparent;
+  border: none;
+  outline: none;
+  font-size: inherit;
+  font-weight: inherit;
+  color: inherit;
+  text-align: center;
+  min-width: 60px;
+  resize: none;
+  margin: 0;
+  padding: 8px 12px;
+  line-height: inherit;
+  font-family: inherit;
+  letter-spacing: inherit;
+  box-sizing: border-box;
+  overflow: hidden;
+  vertical-align: top;
+  user-select: text; // Permitir seleção apenas no textarea
+}
+
+.nodeText {
+  user-select: none;
+  text-align: center;
+  word-wrap: break-word;
+  min-width: 60px;
+  margin: 0;
+  padding: 8px 12px;
+  line-height: inherit;
+}
+
+.addNodeButton {
+  background: #6366f1;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  padding: 8px 12px;
+  cursor: pointer;
+  margin-right: 8px;
+
+  &:hover {
+    background: #5a5fdb;
+  }
+}
+
+.taskbar {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: 40px;
+  background: #1a1a1a;
+  display: flex;
+  align-items: center;
+  padding: 0 8px;
+  box-shadow: 0 -2px 8px rgba(0, 0, 0, 0.2);
+  z-index: 9999;
+}
+
+.taskbarItem {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 4px 12px;
+  background: #2d2d2d;
+  border-radius: 4px;
+  cursor: pointer;
+  color: white;
+  font-size: 13px;
+  transition: all 0.2s ease;
+  border: 1px solid transparent;
+
+  &:hover {
+    background: #3d3d3d;
+  }
+
+  &.active {
+    background: #3d3d3d;
+    border-color: #6366f1;
+  }
+
+  svg {
+    width: 16px;
+    height: 16px;
+  }
+}

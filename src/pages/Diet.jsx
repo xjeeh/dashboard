@@ -4,6 +4,7 @@ import store from "store2";
 import { Icon } from "../components/Icon";
 import { DndProvider, useDrag, useDrop } from "react-dnd";
 import { HTML5Backend } from "react-dnd-html5-backend";
+import { v4 as uuidv4 } from "uuid";
 
 // Função utilitária para parsear CSV simples
 function parseCSV(csv) {
@@ -126,7 +127,7 @@ const DraggableRow = ({ index, moveRow, children }) => {
 
 const Diet = () => {
   const newItem = () => ({
-    id: crypto.randomUUID(),
+    id: uuidv4(),
     name: "",
     quantity: "",
     unit: "",
@@ -263,7 +264,7 @@ const Diet = () => {
 
     const duplicatedItem = {
       ...itemToDuplicate,
-      id: crypto.randomUUID(),
+      id: uuidv4(),
     };
 
     const updatedList = [...list, duplicatedItem];
@@ -315,9 +316,9 @@ const Diet = () => {
               <tr className={css.tableHeader}>
                 <th className={`${css.tableCell} ${css.tableCellLeft}`}>Nome</th>
                 <th className={css.tableCellCenter}>Horário</th>
+                <th className={css.tableCellCenter}>Calorias</th>
                 <th className={css.tableCellCenter}>Qtd.</th>
                 <th className={css.tableCellCenter}>Unidade</th>
-                <th className={css.tableCellCenter}>Calorias</th>
                 <th className={css.tableCellCenter}>Proteína</th>
                 <th className={css.tableCellCenter}>Carb. Livre</th>
                 <th className={css.tableCellCenter}>Gordura</th>
@@ -330,9 +331,9 @@ const Diet = () => {
                 <DraggableRow key={item.id} index={index} moveRow={moveRow}>
                   <td className={`${css.tableCell} ${css.tableCellLeft}`}>{item.name}</td>
                   <td className={`${css.tableCell} ${css.tableCellCenter}`}>{item.time}</td>
+                  <td className={`${css.tableCell} ${css.tableCellCenter}`}>{item.calories}</td>
                   <td className={`${css.tableCell} ${css.tableCellCenter}`}>{item.quantity}</td>
                   <td className={`${css.tableCell} ${css.tableCellCenter}`}>{item.unit}</td>
-                  <td className={`${css.tableCell} ${css.tableCellCenter}`}>{item.calories}</td>
                   <td className={`${css.tableCell} ${css.tableCellCenter}`}>{item.protein}</td>
                   <td className={`${css.tableCell} ${css.tableCellCenter}`}>{item.carb}</td>
                   <td className={`${css.tableCell} ${css.tableCellCenter}`}>{item.fat}</td>

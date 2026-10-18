@@ -1,4 +1,5 @@
 .Wrapper {
+  max-width: 100vw;
   position: fixed;
   bottom: 0;
   right: 0;
@@ -10,7 +11,7 @@
   background: #bbbbbb;
   gap: 16px;
   min-height: 220px;
-  min-width: 600px;
+  // min-width: 600px;
   box-sizing: border-box;
   border-radius: 10px 0 0 0;
   box-shadow: 0 2px 8px #0002;
@@ -118,7 +119,9 @@
   padding: 6px 10px;
   color: #fff;
   font-size: 13px;
-  transition: background 0.15s, box-shadow 0.15s;
+  transition:
+    background 0.15s,
+    box-shadow 0.15s;
   box-shadow: 0 1px 4px #0001;
   gap: 8px;
 }
