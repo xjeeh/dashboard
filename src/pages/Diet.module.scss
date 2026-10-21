@@ -1,25 +1,43 @@
+@use "../styles/breakpoints" as bp;
+
 .container {
+  width: 100%;
+
   table {
     vertical-align: baseline;
   }
 }
 
 .wrapper {
+  width: 100%;
   max-width: 1200px;
-  margin: 32px auto;
+  margin: 0 auto;
   background: #444876;
-  border-radius: 16px;
+  border-radius: 12px;
   box-shadow: 0 2px 16px #0003;
-  padding: 24px;
+  padding: 12px;
   color: white;
+  box-sizing: border-box;
+
+  @include bp.md {
+    margin: 32px auto;
+    border-radius: 16px;
+    padding: 24px;
+  }
 }
 
 .dateNav {
   display: flex;
   align-items: center;
   justify-content: center;
-  margin-bottom: 24px;
-  gap: 8px;
+  margin-bottom: 16px;
+  gap: 4px;
+  flex-wrap: wrap;
+
+  @include bp.md {
+    margin-bottom: 24px;
+    gap: 8px;
+  }
 }
 
 .dateNavButton {
@@ -30,39 +48,59 @@
   border-radius: 8px;
   transition: background 0.2s;
   color: white;
+  min-width: var(--touch-min);
+  min-height: var(--touch-min);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
 }
 .dateNavButton:hover {
   background: #393c5a;
 }
 
 .selectedDate {
-  margin: 0 16px;
+  margin: 0 8px;
   font-weight: bold;
-  padding: 4px 16px;
+  padding: 6px 12px;
   border-radius: 12px;
   background: #393c5a;
   color: #9ba8ea;
   border: 2px solid #9ba8ea;
   letter-spacing: 0.5px;
   transition: all 0.2s;
-  min-width: 120px;
+  min-width: 0;
   text-align: center;
   user-select: none;
+  font-size: 14px;
+
+  @include bp.md {
+    margin: 0 16px;
+    padding: 4px 16px;
+    min-width: 120px;
+  }
 }
 
 .tableWrapper {
   width: 100%;
   background: #393c5a;
   border-radius: 12px;
+  overflow-x: auto;
   overflow-y: auto;
-  min-height: 400px;
-  max-height: 600px;
+  -webkit-overflow-scrolling: touch;
+  min-height: 240px;
+  max-height: min(50dvh, 480px);
   box-shadow: 0 1px 4px #0002;
   color: white;
+
+  @include bp.md {
+    min-height: 400px;
+    max-height: 600px;
+  }
 }
 
 table {
   width: 100%;
+  min-width: 520px;
   border-collapse: separate;
   border-spacing: 0;
 }
@@ -72,16 +110,15 @@ table {
   top: 0;
   background: #23243a;
   z-index: 2;
+  padding: 10px 8px;
+  font-weight: 700;
+  font-size: 13px;
+  white-space: nowrap;
 }
 
 .tableBody {
   overflow-y: auto;
   flex: 1;
-}
-
-.tableHeader th {
-  padding: 10px 8px;
-  font-weight: 700;
 }
 
 .tableRow {
@@ -100,9 +137,14 @@ table {
 }
 
 .tableCell {
-  padding: 1px 8px;
-  font-size: 15px;
+  padding: 8px;
+  font-size: 14px;
   text-align: center;
+
+  @include bp.md {
+    padding: 1px 8px;
+    font-size: 15px;
+  }
 }
 
 .tableCellRight {
@@ -121,28 +163,48 @@ table {
   background: none;
   border: none;
   cursor: pointer;
-  margin-right: 8px;
+  margin-right: 4px;
+  padding: 8px;
+  min-width: var(--touch-min);
+  min-height: var(--touch-min);
 }
 
 .deleteButton {
   background: none;
   border: none;
   cursor: pointer;
+  padding: 8px;
+  min-width: var(--touch-min);
+  min-height: var(--touch-min);
 }
 
 .form {
   display: flex;
-  flex-wrap: wrap;
+  flex-direction: column;
   gap: 12px;
-  margin-top: 24px;
-  align-items: flex-end;
-  justify-content: center;
+  margin-top: 16px;
+  align-items: stretch;
+
+  @include bp.md {
+    flex-direction: row;
+    flex-wrap: wrap;
+    align-items: flex-end;
+    justify-content: center;
+    margin-top: 24px;
+  }
 }
 
 .formField,
 .formFieldLarge {
-  min-width: 140px;
-  flex: 1 1 140px;
+  min-width: 0;
+  width: 100%;
+  flex: 1 1 auto;
+
+  @include bp.md {
+    min-width: 140px;
+    flex: 1 1 140px;
+    width: auto;
+  }
 }
 
 .formLabel {
@@ -155,26 +217,39 @@ table {
 
 .input,
 .select {
-  padding: 8px 12px;
+  padding: 10px 12px;
   border-radius: 8px;
   border: 1.5px solid #9ba8ea;
-  font-size: 15px;
+  font-size: 16px;
   width: 100%;
   background: #23243a;
   color: white;
   min-width: 0;
   box-sizing: border-box;
   text-align: left;
+  min-height: var(--touch-min);
+
+  @include bp.md {
+    padding: 8px 12px;
+    font-size: 15px;
+    min-height: auto;
+  }
 }
 .input[readonly] {
   opacity: 0.7;
 }
 
 .buttonGroup {
-  align-self: end;
-  min-width: 140px;
+  align-self: stretch;
+  width: 100%;
   display: flex;
   gap: 8px;
+
+  @include bp.md {
+    align-self: end;
+    min-width: 140px;
+    width: auto;
+  }
 }
 
 .submitButton {
@@ -182,13 +257,14 @@ table {
   color: #23243a;
   border: none;
   border-radius: 8px;
-  padding: 10px 18px;
+  padding: 12px 18px;
   font-weight: bold;
   font-size: 15px;
   box-shadow: 0 1px 4px #0001;
   cursor: pointer;
   transition: background 0.2s;
   width: 100%;
+  min-height: var(--touch-min);
 }
 .submitButton:hover {
   background: #7a8fd6;
@@ -199,13 +275,14 @@ table {
   color: #23243a;
   border: none;
   border-radius: 8px;
-  padding: 10px 18px;
+  padding: 12px 18px;
   font-weight: bold;
   font-size: 15px;
   box-shadow: 0 1px 4px #0001;
   cursor: pointer;
   transition: background 0.2s;
   width: 100%;
+  min-height: var(--touch-min);
 }
 .cancelButton:hover {
   background: #cfd8ee;

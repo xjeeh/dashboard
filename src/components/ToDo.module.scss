@@ -1,32 +1,85 @@
+@use "../styles/breakpoints" as bp;
+
+.todoPage {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  min-width: 0;
+  gap: 12px;
+  // mobile: page scrolls; desktop: fill height for side-by-side lists
+  @include bp.md {
+    height: 100%;
+    min-height: 0;
+  }
+}
+
 .lists {
   display: flex;
-  gap: 5px;
-  align-items: flex-start;
+  flex-direction: column;
+  gap: 16px;
+  align-items: center;
+  width: 100%;
+
+  @include bp.md {
+    flex-direction: row;
+    flex-wrap: nowrap;
+    align-items: flex-start;
+    justify-content: flex-start;
+    gap: 5px;
+    height: 100%;
+    min-height: 0;
+    overflow-x: auto;
+    overflow-y: hidden;
+  }
 
   .list {
-    padding: 15px;
+    padding: 12px;
     background: #444876;
     color: white;
     display: flex;
     flex-direction: column;
-    width: 500px;
-    max-height: 90vh;
-    overflow: hidden;
+    width: calc(100% - 24px);
+    max-width: 420px;
+    margin: 0 auto;
+    max-height: none;
+    overflow: visible;
+    border-radius: 8px;
+    box-sizing: border-box;
+    flex-shrink: 0;
+
+    @include bp.md {
+      padding: 15px;
+      width: 500px;
+      max-width: none;
+      margin: 0;
+      max-height: 90vh;
+      overflow: hidden;
+      border-radius: 0;
+    }
 
     &.closed {
       display: none;
     }
 
     &.minimized {
-      width: 145px;
+      width: calc(100% - 24px);
+      max-width: 420px;
+
+      @include bp.md {
+        width: 145px;
+        max-width: none;
+      }
     }
 
     .category {
       display: flex;
-      padding: 2.5px 5px;
+      padding: 6px 8px;
       user-select: none;
       background: #2f2f2fc9;
       align-items: center;
+      min-height: var(--touch-min);
+      border-radius: 4px;
+      flex-shrink: 0;
 
       span {
         margin-left: 10px;
@@ -35,6 +88,9 @@
       .windowActions {
         margin-right: 0;
         margin-left: auto;
+        display: flex;
+        gap: 4px;
+
         svg {
           cursor: pointer;
         }
@@ -42,72 +98,143 @@
     }
 
     .body {
+      display: flex;
+      flex-direction: column;
+      min-height: 0;
+      flex: 1;
+
       &.minimized {
         display: none;
       }
 
       .form {
         display: flex;
-        flex-direction: row;
-        padding: 5px 0px;
-        align-items: center;
+        flex-direction: column;
+        padding: 8px 0;
+        align-items: stretch;
         cursor: default;
         margin-top: 10px;
+        gap: 8px;
+        flex-shrink: 0;
+
+        @include bp.sm {
+          flex-direction: row;
+          align-items: center;
+          gap: 0;
+        }
 
         input.description {
-          margin-right: 5px;
+          margin-right: 0;
           width: 100%;
+          min-height: var(--touch-min);
+
+          @include bp.sm {
+            margin-right: 5px;
+            min-height: auto;
+          }
         }
 
         .add {
           display: flex;
+          align-items: center;
+          justify-content: center;
           background: mediumseagreen;
           border: none;
-          padding: 4px 6px;
+          padding: 10px 12px;
           border-radius: 4px;
-          margin-left: 3px;
+          margin-left: 0;
+          min-height: var(--touch-min);
+          align-self: stretch;
+
+          @include bp.sm {
+            padding: 4px 6px;
+            margin-left: 3px;
+            min-height: auto;
+            align-self: auto;
+          }
         }
 
         .filter {
           display: flex;
+          width: 100%;
+          gap: 8px;
+
+          @include bp.sm {
+            width: auto;
+            gap: 0;
+          }
 
           input {
-            width: 100px;
+            flex: 1;
+            width: auto;
+            min-width: 0;
             border: none;
             border-radius: 4px;
             color: white;
-            margin-left: 10px;
+            margin-left: 0;
+            min-height: var(--touch-min);
+
+            @include bp.sm {
+              width: 100px;
+              flex: none;
+              margin-left: 10px;
+              min-height: auto;
+            }
           }
 
           button {
             background: #2f2f2f;
             border: none;
-            padding: 4px 6px;
+            padding: 8px 10px;
             border-radius: 4px;
             color: white;
             cursor: pointer;
-            margin-left: 5px;
+            margin-left: 0;
+            min-height: var(--touch-min);
+
+            @include bp.sm {
+              padding: 4px 6px;
+              margin-left: 5px;
+              min-height: auto;
+            }
           }
         }
       }
 
       .items {
         margin-top: 10px;
-        overflow: auto;
-        max-height: 700px;
+        // mobile: grow with content; page scrolls
+        overflow: visible;
+        max-height: none;
+
+        @include bp.md {
+          overflow: auto;
+          max-height: 700px;
+          flex: 1;
+          min-height: 0;
+          -webkit-overflow-scrolling: touch;
+        }
 
         .item {
           position: relative;
           display: flex;
           flex-direction: row;
-          font-size: 12px;
-          padding: 3px 5px;
+          font-size: 14px;
+          padding: 10px 8px;
           align-items: center;
           cursor: default;
           background: #3b3b3b;
-          margin: 2px 0px;
+          margin: 4px 0;
           border: solid 1px #5c5c5c;
           border-radius: 4px;
+          min-height: var(--touch-min);
+
+          @include bp.md {
+            font-size: 12px;
+            padding: 3px 5px;
+            margin: 2px 0;
+            min-height: auto;
+          }
 
           &.editing {
             background: #54678d !important;
@@ -124,13 +251,17 @@
 
           .toggleFinished input {
             cursor: pointer;
+            width: 18px;
+            height: 18px;
           }
 
           .description {
             display: flex;
             flex: 1 0;
-            padding: 0 10px 0 10px;
+            padding: 0 10px;
             cursor: pointer;
+            min-width: 0;
+            word-break: break-word;
           }
 
           &:hover .action {
@@ -139,14 +270,19 @@
 
           .action {
             display: flex;
-            visibility: hidden;
-            position: absolute;
-            display: flex;
+            visibility: visible;
+            position: static;
             right: 0;
             flex: 0 0;
-            padding: 0 5px;
+            padding: 0 4px;
             user-select: none;
             cursor: pointer;
+            gap: 2px;
+
+            @include bp.md {
+              visibility: hidden;
+              position: absolute;
+            }
           }
         }
       }
@@ -154,12 +290,14 @@
       .empty {
         text-align: center;
         background: #b9b9b938;
-        padding: 5px 1px;
+        padding: 8px 4px;
         font-size: 14px;
       }
 
       .progress {
         margin-top: 10px;
+        flex-shrink: 0;
+
         .total {
           display: inline-block;
           width: 100%;
@@ -185,19 +323,44 @@
 }
 
 .options {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 4px;
+  justify-content: center;
+  flex-shrink: 0;
+
+  @include bp.md {
+    justify-content: flex-start;
+  }
+
   .restore {
     background: #aea2ff;
     border: none;
-    padding: 4px 6px;
+    padding: 10px 12px;
     border-radius: 4px;
-    margin-left: 10px;
+    margin-left: 0;
+    min-height: var(--touch-min);
+
+    @include bp.md {
+      padding: 4px 6px;
+      margin-left: 10px;
+      min-height: auto;
+    }
   }
 
   .backup {
     background: #fcfcfc;
     border: none;
-    padding: 4px 6px;
+    padding: 10px 12px;
     border-radius: 4px;
-    margin-left: 10px;
+    margin-left: 0;
+    min-height: var(--touch-min);
+
+    @include bp.md {
+      padding: 4px 6px;
+      margin-left: 10px;
+      min-height: auto;
+    }
   }
 }

@@ -1,54 +1,178 @@
+@use "../styles/breakpoints" as bp;
+
+// Tabs inferiores + swipe até desktop largo; side nav só em monitores grandes
+$desktop-nav: bp.$bp-xl;
+
 .dashboardWrapper {
   display: flex;
-  height: 100vh;
-  min-height: 400px;
-  width: 100vw;
+  flex-direction: column;
+  height: 100dvh;
+  width: 100%;
   overflow: hidden;
+  padding-bottom: calc(var(--nav-height) + var(--safe-bottom));
+  touch-action: pan-y;
+
+  @media (min-width: $desktop-nav) {
+    flex-direction: row;
+    padding-bottom: 0;
+    height: 100vh;
+    min-height: 400px;
+    width: 100vw;
+  }
+}
+
+.pagesViewport {
+  position: relative;
+  flex: 1;
+  min-height: 0;
+  width: 100%;
+  overflow: hidden;
+
+  @media (min-width: $desktop-nav) {
+    // no desktop largo o track não desliza; mostra só a aba ativa via CSS
+    overflow: hidden;
+  }
+}
+
+.pagesTrack {
+  display: flex;
+  flex-direction: row;
+  width: 100%;
+  height: 100%;
+  will-change: transform;
+
+  @media (min-width: $desktop-nav) {
+    transform: none !important;
+    transition: none !important;
+    display: block;
+    height: 100%;
+  }
+}
+
+.pagePane {
+  flex: 0 0 100%;
+  width: 100%;
+  height: 100%;
+  min-width: 0;
+  overflow: hidden;
+
+  @media (min-width: $desktop-nav) {
+    display: none;
+    height: 100%;
+
+    &.pageActive {
+      display: block;
+    }
+  }
 }
 
 .dashboardContent {
-  flex: 1;
-  padding-left: 32px;
-  display: flex;
-  align-items: center;
-  justify-content: flex-start;
-  overflow-x: auto;
+  height: 100%;
+  width: 100%;
+  padding: 12px;
+  padding-bottom: 16px;
+  box-sizing: border-box;
+  overflow-x: hidden;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+  overscroll-behavior-y: contain;
+
+  @include bp.md {
+    padding: 12px 16px 16px;
+  }
+
+  @media (min-width: $desktop-nav) {
+    padding: 16px 16px 16px 32px;
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    overflow-x: auto;
+    overflow-y: auto;
+  }
 }
 
 .tabSelector {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  z-index: 40;
   display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: flex-start;
-  gap: 16px;
-  height: 100%;
-  border-right: 1px solid #3f3f3f;
-  padding: 16px 4px 0 4px;
+  flex-direction: row;
+  align-items: stretch;
+  justify-content: space-around;
+  gap: 0;
+  height: calc(var(--nav-height) + var(--safe-bottom));
+  padding: 0 4px var(--safe-bottom);
+  border-top: 1px solid #3f3f3f;
   background: rgb(41, 41, 41);
-  box-shadow: none;
-  padding: 10px;
+  box-shadow: 0 -2px 12px rgba(0, 0, 0, 0.25);
+
+  @media (min-width: $desktop-nav) {
+    position: static;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: center;
+    gap: 16px;
+    height: 100%;
+    width: auto;
+    padding: 10px;
+    border-top: none;
+    border-right: 1px solid #3f3f3f;
+    box-shadow: none;
+  }
 }
 
 .tabButton {
   background: none;
   border: none;
   cursor: pointer;
-  padding: 6px;
-  border-radius: 100%;
+  padding: 4px 8px;
+  min-width: var(--touch-min);
+  min-height: var(--touch-min);
+  border-radius: 10px;
   box-shadow: none;
   transition:
     box-shadow 0.2s,
     background 0.2s;
   outline: none;
   display: flex;
+  flex-direction: column;
   align-items: center;
   justify-content: center;
-  margin: 0 0 4px 0;
-  font-size: 1.7rem;
+  gap: 2px;
+  margin: 4px 2px;
+  font-size: 1.35rem;
   color: #888;
+  flex: 1;
+
+  @media (min-width: $desktop-nav) {
+    flex: none;
+    flex-direction: row;
+    border-radius: 100%;
+    padding: 6px;
+    margin: 0 0 4px 0;
+    font-size: 1.7rem;
+    min-width: auto;
+    min-height: auto;
+  }
 
   &.selected {
     background: rgb(148, 148, 148);
     box-shadow: 0 0 0 2px #383838;
+  }
+}
+
+.tabLabel {
+  font-size: 10px;
+  line-height: 1.1;
+  color: inherit;
+  max-width: 72px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+
+  @media (min-width: $desktop-nav) {
+    display: none;
   }
 }

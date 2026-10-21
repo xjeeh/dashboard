@@ -1,3 +1,9 @@
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
 :root {
   font-family: system-ui, Avenir, Helvetica, Arial, sans-serif;
   line-height: 1.5;
@@ -10,14 +16,29 @@
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+
+  --nav-height: 58px;
+  --taskbar-height: 44px;
+  --safe-top: env(safe-area-inset-top, 0px);
+  --safe-bottom: env(safe-area-inset-bottom, 0px);
+  --safe-left: env(safe-area-inset-left, 0px);
+  --safe-right: env(safe-area-inset-right, 0px);
+  --app-bg: #2f3242;
+  --touch-min: 44px;
 }
 
 * {
   outline: none;
 }
 
+html {
+  -webkit-text-size-adjust: 100%;
+  height: 100%;
+}
+
 ::-webkit-scrollbar {
-  width: 10px;
+  width: 8px;
+  height: 8px;
 }
 
 ::-webkit-scrollbar-track {
@@ -26,6 +47,7 @@
 
 ::-webkit-scrollbar-thumb {
   background: #888;
+  border-radius: 4px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
@@ -34,41 +56,56 @@
 
 body {
   margin: 0;
-  display: flex;
-  place-items: center;
   min-width: 320px;
-  min-height: 100vh;
-  background: #2f3242;
-  justify-content: center;
+  min-height: 100%;
+  min-height: 100dvh;
+  background: var(--app-bg);
+  color: rgba(255, 255, 255, 0.87);
+  overflow-x: hidden;
+  -webkit-tap-highlight-color: transparent;
 }
 
-button {
-  border-radius: 8px;
-  cursor: pointer;
-}
-
-input {
-  font-size: 14px;
-  padding: 8px 15px;
-  box-sizing: border-box;
-  background-color: #3b3b3b;
-  color: white;
-  border: none;
-}
-
-select {
-  font-size: 14px;
-  padding: 3px 15px;
-  box-sizing: border-box;
-  background-color: #3b3b3b;
-  border: solid 1px #5c5c5c;
-  color: white;
-  border-radius: 3px;
+#root {
+  width: 100%;
+  min-height: 100%;
+  min-height: 100dvh;
 }
 
 button {
   border: none;
   border-radius: 4px;
+  cursor: pointer;
+  touch-action: manipulation;
+}
+
+input,
+select,
+textarea {
+  font-size: 16px; /* evita zoom automático no iOS */
+  padding: 8px 12px;
+  box-sizing: border-box;
+  background-color: #3b3b3b;
+  color: white;
+  border: none;
+  max-width: 100%;
+}
+
+select {
+  border: solid 1px #5c5c5c;
+  border-radius: 3px;
+  padding: 8px 12px;
+}
+
+@media (min-width: 768px) {
+  input,
+  select,
+  textarea {
+    font-size: 14px;
+  }
+
+  ::-webkit-scrollbar {
+    width: 10px;
+  }
 }
 
 /* CSS global para inputs do mindmap */
@@ -98,7 +135,6 @@ button {
   box-shadow: 0 0 0 2px rgba(52, 152, 219, 0.2) !important;
 }
 
-/* CSS para textos do mindmap */
 .mindmap-tree .node-text,
 .mindmap-tree .node-label,
 .mindmap-tree text,
@@ -108,7 +144,6 @@ button {
   fill: white !important;
 }
 
-/* CSS para elementos editáveis do mindmap */
 .mindmap-tree .node-input,
 .mindmap-tree .editable-text,
 .mindmap-tree .editable,
@@ -117,7 +152,6 @@ button {
   color: white !important;
 }
 
-/* CSS para elementos SVG do mindmap */
 .mindmap-tree svg text {
   fill: white !important;
   color: white !important;

@@ -55,14 +55,11 @@ const AppContent = () => {
 
 const App = () => {
   return (
-    <>
-      <>a</>
-      <ErrorBoundary FallbackComponent={AppError}>
-        <WindowProvider>
-          <AppContent />
-        </WindowProvider>
-      </ErrorBoundary>
-    </>
+    <ErrorBoundary FallbackComponent={AppError}>
+      <WindowProvider>
+        <AppContent />
+      </WindowProvider>
+    </ErrorBoundary>
   );
 };
 

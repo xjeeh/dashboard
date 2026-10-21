@@ -1,31 +1,53 @@
+@use "../styles/breakpoints" as bp;
+
 .wrapper {
   position: fixed;
   top: 50px;
-  left: 0px;
+  left: 0;
   width: 300px;
   height: 200px;
   display: flex;
+  flex-direction: column;
   background: rgb(255, 212, 92);
   color: black;
-  flex-direction: column;
-  padding: 5px 10px;
+  padding: 8px 12px;
   overflow: hidden;
   min-width: 200px;
   min-height: 150px;
-  resize: both;
   user-select: none;
+
+  @media (max-width: 767px) {
+    @include bp.mobile-sheet;
+    padding-top: calc(8px + var(--safe-top));
+    padding-bottom: calc(8px + var(--safe-bottom));
+  }
+
+  @include bp.md {
+    padding: 5px 10px;
+    resize: both;
+  }
 
   &.closed {
     display: none;
   }
 
   &.minimized {
-    display: none !important; // Esconde completamente o componente quando minimizado
+    display: none !important;
   }
 
   .windowActions {
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    gap: 8px;
+    min-height: var(--touch-min);
     text-align: right;
     cursor: pointer;
+    flex-shrink: 0;
+
+    @include bp.md {
+      min-height: auto;
+    }
   }
 
   textarea {
@@ -40,47 +62,5 @@
     font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
     user-select: text;
     cursor: text;
-  }
-}
-
-.taskbar {
-  position: fixed;
-  bottom: 0;
-  left: 0;
-  width: 100%;
-  height: 40px;
-  background: #1a1a1a;
-  display: flex;
-  align-items: center;
-  padding: 0 8px;
-  box-shadow: 0 -2px 8px rgba(0, 0, 0, 0.2);
-  z-index: 9999;
-}
-
-.taskbarItem {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  padding: 4px 12px;
-  background: #2d2d2d;
-  border-radius: 4px;
-  cursor: pointer;
-  color: white;
-  font-size: 13px;
-  transition: all 0.2s ease;
-  border: 1px solid transparent;
-
-  &:hover {
-    background: #3d3d3d;
-  }
-
-  &.active {
-    background: #3d3d3d;
-    border-color: #6366f1;
-  }
-
-  svg {
-    width: 16px;
-    height: 16px;
   }
 }

@@ -99,8 +99,10 @@ export const CalendarPage = () => {
           className={`${css.ToggleButton} ${css.ToggleButtonLeft}`}
           onClick={() => setVisible((v) => !v)}
           title={visible ? "Esconder calendário" : "Mostrar calendário"}
+          aria-label={visible ? "Esconder calendário" : "Mostrar calendário"}
         >
-          {visible ? "⮞" : "⮜"}
+          <span className={css.ToggleIconMobile}>{visible ? "▾" : "▴"}</span>
+          <span className={css.ToggleIconDesktop}>{visible ? "⮞" : "⮜"}</span>
         </button>
         <div className={css.EventList}>
           <div className={css.ActiveDate}>{dayjs(value).format("DD/MM/YYYY")}</div>

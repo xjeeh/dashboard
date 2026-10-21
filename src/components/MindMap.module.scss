@@ -1,3 +1,5 @@
+@use "../styles/breakpoints" as bp;
+
 .wrapper {
   position: fixed;
   top: 100px;
@@ -10,18 +12,30 @@
   flex-direction: column;
   padding: 5px 10px;
   overflow: hidden;
-  min-width: 400px;
-  min-height: 300px;
-  resize: both;
-  border-radius: 8px;
+  min-width: 280px;
+  min-height: 240px;
+  border-radius: 0;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+
+  @media (max-width: 767px) {
+    @include bp.mobile-sheet;
+    padding-top: calc(5px + var(--safe-top));
+    padding-bottom: calc(5px + var(--safe-bottom));
+  }
+
+  @include bp.md {
+    min-width: 400px;
+    min-height: 300px;
+    resize: both;
+    border-radius: 8px;
+  }
 
   &.closed {
     display: none;
   }
 
   &.minimized {
-    display: none !important; // Esconde completamente o componente quando minimizado
+    display: none !important;
   }
 
   .windowActions {
@@ -31,6 +45,12 @@
     padding: 5px 0;
     border-bottom: 1px solid #34495e;
     margin-bottom: 10px;
+    min-height: var(--touch-min);
+    flex-shrink: 0;
+
+    @include bp.md {
+      min-height: auto;
+    }
 
     .title {
       font-weight: bold;

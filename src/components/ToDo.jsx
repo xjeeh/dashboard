@@ -61,18 +61,20 @@ const Todo = () => {
 
   return (
     <DndProvider backend={HTML5Backend}>
-      <div className={css.lists}>
-        {categories.map((category) => (
-          <ToDoList key={category.id} category={category} />
-        ))}
-      </div>
-      <div className={css.options}>
-        <button onClick={backup} className={css.backup} title="Save Backup">
-          <Icon name="Backup" />
-        </button>
-        <button onClick={restore} className={css.restore} title="Restore backup">
-          <Icon name="RestartAlt" />
-        </button>
+      <div className={css.todoPage}>
+        <div className={css.lists}>
+          {categories.map((category) => (
+            <ToDoList key={category.id} category={category} />
+          ))}
+        </div>
+        <div className={css.options}>
+          <button onClick={backup} className={css.backup} title="Save Backup">
+            <Icon name="Backup" />
+          </button>
+          <button onClick={restore} className={css.restore} title="Restore backup">
+            <Icon name="RestartAlt" />
+          </button>
+        </div>
       </div>
     </DndProvider>
   );
