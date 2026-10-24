@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import classNames from "classnames";
 import Diet from "../pages/Diet";
 import JobOfferAnswer from "../pages/JobOfferAnswer";
+import Water from "../pages/Water";
 import Todo from "./ToDo";
 import { Icon } from "./Icon";
 import css from "./Dashboard.module.scss";
@@ -11,6 +12,7 @@ import { useSwipeTabs } from "../hooks/useSwipeTabs";
 const TABS = [
   { label: "To-Do", icon: "Checklist", Component: Todo },
   { label: "Dieta", icon: "Restaurant", Component: Diet },
+  { label: "Água", icon: "WaterDrop", Component: Water },
   { label: "Job Offer", icon: "Work", Component: JobOfferAnswer },
 ];
 

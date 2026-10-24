@@ -1,0 +1,138 @@
+@use "../styles/breakpoints" as bp;
+
+.wrapper {
+  width: 100%;
+  max-width: 720px;
+  margin: 0 auto;
+  background: #444876;
+  border-radius: 12px;
+  box-shadow: 0 2px 16px #0003;
+  padding: 16px;
+  color: white;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  align-items: center;
+  user-select: none;
+  -webkit-user-select: none;
+
+  @include bp.md {
+    padding: 24px;
+    border-radius: 16px;
+  }
+}
+
+.targetRow {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.stepButton {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: var(--touch-min);
+  min-height: var(--touch-min);
+  background: #23243a;
+  border: 1.5px solid #9ba8ea;
+  border-radius: 10px;
+  color: white;
+  padding: 8px;
+
+  &:disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
+  }
+
+  &:not(:disabled):hover {
+    background: #393c5a;
+  }
+}
+
+.targetLabel {
+  min-width: 88px;
+  text-align: center;
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: #9ba8ea;
+  letter-spacing: 0.5px;
+  padding: 8px 12px;
+  background: #393c5a;
+  border-radius: 12px;
+  border: 2px solid #9ba8ea;
+}
+
+.resetButton {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: var(--touch-min);
+  min-height: var(--touch-min);
+  background: #e0e4f7;
+  border-radius: 10px;
+  padding: 8px;
+  margin-left: 4px;
+
+  &:hover {
+    background: #cfd8ee;
+  }
+}
+
+.cupsRow {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 10px;
+  width: 100%;
+}
+
+.cupButton {
+  background: #393c5a;
+  border: 1px solid #5a5f8a;
+  border-radius: 12px;
+  padding: 8px 10px;
+  min-width: 56px;
+  min-height: 72px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  transition:
+    transform 0.15s ease,
+    background 0.15s ease,
+    border-color 0.15s ease;
+
+  &:not(:disabled):hover {
+    transform: translateY(-2px);
+    background: #2d2e4a;
+  }
+
+  &:disabled {
+    cursor: default;
+    opacity: 1;
+  }
+
+  &.cupFilled {
+    border-color: #4fc3f7;
+    background: #2a3a55;
+  }
+
+  &.cupEmpty {
+    border-style: dashed;
+  }
+}
+
+.cupSvg {
+  width: 40px;
+  height: 50px;
+  display: block;
+}
+
+.progress {
+  margin: 0;
+  font-size: 14px;
+  color: #bbbef0;
+}
