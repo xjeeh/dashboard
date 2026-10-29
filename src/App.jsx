@@ -9,15 +9,18 @@ import { Taskbar } from "./components/Taskbar";
 import { WindowProvider, useWindow } from "./contexts/WindowContext";
 import { ErrorBoundary } from "react-error-boundary";
 import { AppError } from "./components/AppError";
+import { AuthProvider, useAuth } from "./contexts/AuthContext";
+import { UserDataProvider, useUserData } from "./contexts/UserDataContext";
+import Login from "./pages/Login";
 
 const AppContent = () => {
+  const { isAuthenticated, logout, user } = useAuth();
+  const { ready, error, get, set } = useUserData();
   const { minimizedWindows, removeMinimizedWindow } = useWindow();
 
   const handleRestore = (windowId) => {
-    // Remover da taskbar
     removeMinimizedWindow(windowId);
 
-    // Atualizar estado do componente no localStorage
     const storeKeys = {
       notepad: "notepad-daily",
       postit: "postIt-daily",
@@ -26,22 +29,49 @@ const AppContent = () => {
 
     const storeKey = storeKeys[windowId];
     if (storeKey) {
-      const data = JSON.parse(localStorage.getItem(storeKey) || "{}");
+      const data = { ...(get(storeKey) || {}) };
       data.isMinimized = false;
-      localStorage.setItem(storeKey, JSON.stringify(data));
-
-      // Disparar evento para notificar os componentes
+      set(storeKey, data);
       window.dispatchEvent(new CustomEvent("storage:restore"));
     }
   };
 
+  if (!isAuthenticated) {
+    return <Login />;
+  }
+
+  if (error) {
+    return (
+      <div className={css.bootMessage}>
+        <p>{error}</p>
+        <p className={css.bootHint}>
+          Sessão de <strong>{user?.name}</strong> mantida. Tente de novo sem precisar logar.
+        </p>
+        <div style={{ display: "flex", gap: 8 }}>
+          <button type="button" onClick={() => window.location.reload()}>
+            Recarregar
+          </button>
+          <button type="button" onClick={logout}>
+            Sair
+          </button>
+        </div>
+      </div>
+    );
+  }
+
+  if (!ready) {
+    return (
+      <div className={css.bootMessage}>
+        <p>Carregando dados de {user?.name}…</p>
+      </div>
+    );
+  }
+
   return (
     <div className={css.wrapper}>
-      <BrowserRouter>
-        <Routes>
-          <Route path="/" element={<Dashboard />} />
-        </Routes>
-      </BrowserRouter>
+      <Routes>
+        <Route path="/" element={<Dashboard />} />
+      </Routes>
       <div className={css.floatingWindows}>
         <PostIt />
         <CalendarPage />
@@ -56,9 +86,15 @@ const AppContent = () => {
 const App = () => {
   return (
     <ErrorBoundary FallbackComponent={AppError}>
-      <WindowProvider>
-        <AppContent />
-      </WindowProvider>
+      <AuthProvider>
+        <UserDataProvider>
+          <WindowProvider>
+            <BrowserRouter>
+              <AppContent />
+            </BrowserRouter>
+          </WindowProvider>
+        </UserDataProvider>
+      </AuthProvider>
     </ErrorBoundary>
   );
 };

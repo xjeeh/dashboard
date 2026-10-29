@@ -3,14 +3,15 @@ import css from "./ToDo.module.scss";
 import useKeypress from "react-use-keypress";
 import ToDoItem from "./ToDoItem";
 import { useEffect, useRef, useState } from "react";
-import store from "store2";
 import update from "immutability-helper";
 import classNames from "classnames";
 import ProgressBar from "./ProgressBar";
 import { v4 as uuidv4 } from "uuid";
-// import YearProgessBar from "./YearProgressBar";
+import { useUserData } from "../contexts/UserDataContext";
 
 const ToDoList = ({ category }) => {
+  const { get, set, data } = useUserData();
+
   const newTodo = () => ({
     id: uuidv4(),
     description: "",
@@ -18,36 +19,35 @@ const ToDoList = ({ category }) => {
     priority: false,
   });
 
-  const [list, setList] = useState(() => {
-    const allData = store("list") || {};
-    return allData[category.storageIndex]?.list || [];
-  });
+  const [list, setList] = useState([]);
   const [currentTodo, setCurrentTodo] = useState(newTodo());
   const [isEditing, setIsEditing] = useState(false);
   const [isMinimized, setIsMinimized] = useState(false);
   const [isClosed, setIsClosed] = useState(false);
-  const [showCompleted, setShowCompleted] = useState(() => {
-    const allData = store("list") || {};
-    return allData[category.storageIndex]?.showCompleted ?? true;
-  });
+  const [showCompleted, setShowCompleted] = useState(true);
 
   const [filter, setFilter] = useState("");
   const [showFilter, setShowFilter] = useState(true);
 
   const descriptionInputRef = useRef(null);
 
+  const readAll = () => ({ ...(get("list") || {}) });
+
+  const writeAll = (allData) => set("list", allData);
+
   useEffect(() => {
-    const allData = store("list") || {};
+    const allData = data.list || {};
     const categoryData = allData[category.storageIndex] || {
       list: [],
       backup: [],
-      showCompleted: false,
+      showCompleted: true,
     };
-    const filteredList = categoryData.list.filter((item) =>
+    setShowCompleted(categoryData.showCompleted ?? true);
+    const filteredList = (categoryData.list || []).filter((item) =>
       item.description.toLowerCase().includes(filter.toLowerCase()),
     );
     setList(filteredList);
-  }, [filter, category.storageIndex]);
+  }, [filter, category.storageIndex, data.list]);
 
   const getVisualIndex = (index) => {
     let visualIndex = 0;
@@ -81,12 +81,12 @@ const ToDoList = ({ category }) => {
     updatedList[index].finished = e.target.checked;
     setList(updatedList);
 
-    const allData = store("list") || {};
+    const allData = readAll();
     allData[category.storageIndex] = {
       ...allData[category.storageIndex],
       list: updatedList,
     };
-    store("list", allData);
+    writeAll(allData);
 
     clearForm();
   };
@@ -97,12 +97,12 @@ const ToDoList = ({ category }) => {
     updatedList[index].priority = !updatedList[index].priority;
     setList(updatedList);
 
-    const allData = store("list") || {};
+    const allData = readAll();
     allData[category.storageIndex] = {
       ...allData[category.storageIndex],
       list: updatedList,
     };
-    store("list", allData);
+    writeAll(allData);
   };
 
   const edit = (index, e) => {
@@ -132,16 +132,16 @@ const ToDoList = ({ category }) => {
     });
     setList(updatedList);
 
-    const allData = store("list") || {};
+    const allData = readAll();
     allData[category.storageIndex] = {
       ...allData[category.storageIndex],
       list: updatedList,
     };
-    store("list", allData);
+    writeAll(allData);
   };
 
   const moveBetweenLists = (id, sourceList) => {
-    const allData = store("list") || {};
+    const allData = readAll();
     const sourceData = allData[sourceList];
 
     if (!sourceData || !sourceData.list) return;
@@ -171,8 +171,7 @@ const ToDoList = ({ category }) => {
       list: updatedCurrentList,
     };
 
-    // Update both lists in storage
-    store("list", allData);
+    writeAll(allData);
     setList(updatedCurrentList);
   };
 
@@ -193,12 +192,12 @@ const ToDoList = ({ category }) => {
     const newValue = !showCompleted;
     setShowCompleted(newValue);
 
-    const allData = store("list") || {};
+    const allData = readAll();
     allData[category.storageIndex] = {
       ...allData[category.storageIndex],
       showCompleted: newValue,
     };
-    store("list", allData);
+    writeAll(allData);
   };
 
   const save = () => {
@@ -208,12 +207,12 @@ const ToDoList = ({ category }) => {
       : [...list, { ...currentTodo, finished: false }];
     setList(updatedList);
 
-    const allData = store("list") || {};
+    const allData = readAll();
     allData[category.storageIndex] = {
       ...allData[category.storageIndex],
       list: updatedList,
     };
-    store("list", allData);
+    writeAll(allData);
 
     clearForm();
   };
@@ -223,12 +222,12 @@ const ToDoList = ({ category }) => {
     const updatedList = list.filter((_, i) => i !== index);
     setList(updatedList);
 
-    const allData = store("list") || {};
+    const allData = readAll();
     allData[category.storageIndex] = {
       ...allData[category.storageIndex],
       list: updatedList,
     };
-    store("list", allData);
+    writeAll(allData);
 
     clearForm();
   };

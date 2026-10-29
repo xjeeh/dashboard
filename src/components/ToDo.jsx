@@ -2,10 +2,12 @@ import ToDoList from "./ToDoList";
 import css from "./ToDo.module.scss";
 import { DndProvider } from "react-dnd";
 import { HTML5Backend } from "react-dnd-html5-backend";
-import store from "store2";
 import { Icon } from "./Icon";
+import { useUserData } from "../contexts/UserDataContext";
 
 const Todo = () => {
+  const { get, set } = useUserData();
+
   const categories = [
     {
       id: "d417ef6b-2dc1-484e-ba90-6d8de5262e49",
@@ -31,22 +33,22 @@ const Todo = () => {
   ];
 
   const backup = () => {
-    const currentData = store("list") || {};
+    const currentData = get("list") || {};
     const backupData = { ...currentData };
 
     categories.forEach((category) => {
       if (!backupData[category.storageIndex]) {
         backupData[category.storageIndex] = { list: [], backup: [], showCompleted: false };
       }
-      backupData[category.storageIndex].backup = [...backupData[category.storageIndex].list];
+      backupData[category.storageIndex].backup = [...(backupData[category.storageIndex].list || [])];
     });
 
-    store("list", backupData);
+    set("list", backupData);
     console.warn("Backup done");
   };
 
   const restore = () => {
-    const backupData = store("list") || {};
+    const backupData = { ...(get("list") || {}) };
 
     categories.forEach((category) => {
       if (backupData[category.storageIndex]?.backup) {
@@ -54,7 +56,7 @@ const Todo = () => {
       }
     });
 
-    store("list", backupData);
+    set("list", backupData);
     window.location.reload();
     console.warn("Restore done");
   };

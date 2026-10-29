@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useEffect } from "react";
 import classNames from "classnames";
 import Diet from "../pages/Diet";
 import JobOfferAnswer from "../pages/JobOfferAnswer";
@@ -6,8 +6,9 @@ import Water from "../pages/Water";
 import Todo from "./ToDo";
 import { Icon } from "./Icon";
 import css from "./Dashboard.module.scss";
-import store from "store2";
 import { useSwipeTabs } from "../hooks/useSwipeTabs";
+import { useUserData } from "../contexts/UserDataContext";
+import { useAuth } from "../contexts/AuthContext";
 
 const TABS = [
   { label: "To-Do", icon: "Checklist", Component: Todo },
@@ -17,11 +18,14 @@ const TABS = [
 ];
 
 const Dashboard = () => {
-  const STORAGE_KEY = "app-currentTab";
-  const [selected, setSelected] = useState(() => {
-    const stored = store.get(STORAGE_KEY);
-    return typeof stored === "number" ? stored : 0;
-  });
+  const { user, logout } = useAuth();
+  const { data, set } = useUserData();
+  const selected = typeof data.currentTab === "number" ? data.currentTab : 0;
+
+  const setSelected = (indexOrFn) => {
+    const next = typeof indexOrFn === "function" ? indexOrFn(selected) : indexOrFn;
+    set("app-currentTab", next);
+  };
 
   const { viewportRef, dragOffset, isDragging, goTo } = useSwipeTabs(
     TABS.length,
@@ -30,8 +34,8 @@ const Dashboard = () => {
   );
 
   useEffect(() => {
-    store.set(STORAGE_KEY, selected);
-  }, [selected]);
+    if (selected >= TABS.length) set("app-currentTab", 0);
+  }, [selected, set]);
 
   const slideStyle = {
     transform: `translate3d(calc(-${selected * 100}% + ${dragOffset}px), 0, 0)`,
@@ -40,6 +44,8 @@ const Dashboard = () => {
 
   return (
     <div className={css.dashboardWrapper}>
+      <span className={css.userChip}>{user?.name}</span>
+
       <div className={css.pagesViewport} ref={viewportRef}>
         <div className={css.pagesTrack} style={slideStyle}>
           {TABS.map(({ label, Component }, idx) => (
@@ -70,6 +76,16 @@ const Dashboard = () => {
             <span className={css.tabLabel}>{tab.label}</span>
           </button>
         ))}
+        <button
+          type="button"
+          className={classNames(css.tabButton, css.logout)}
+          onClick={logout}
+          title="Sair"
+          aria-label="Sair"
+        >
+          <Icon name="Logout" color="#ef9a9a" />
+          <span className={css.tabLabel}>Sair</span>
+        </button>
       </nav>
     </div>
   );

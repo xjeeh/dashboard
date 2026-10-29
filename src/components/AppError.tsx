@@ -1,26 +1,17 @@
-import React from "react";
 import { getErrorMessage, type FallbackProps } from "react-error-boundary";
-import { useNavigate } from "react-router-dom";
 
 export const AppError = ({ error, resetErrorBoundary }: FallbackProps) => {
-  alert(error);
   const title = "An error has occurred";
-  const body = `The application encountered an error and you have been returned to the entry page. If this error persists, or
-      unexpected behavior occurred during or before this error, please contact your administrator.`;
-
-  const navigate = useNavigate();
-
-  const goBack = () => {
-    resetErrorBoundary();
-    navigate("/");
-  };
+  const body = `The application encountered an error. If this persists, please contact your administrator.`;
 
   return (
-    <div>
+    <div style={{ padding: 24, color: "#eee", background: "#2f3242", minHeight: "100vh" }}>
       <h1>{title}</h1>
       <p>{body}</p>
-      <pre>{getErrorMessage(error)}</pre>
-      <button onClick={goBack}>Try again</button>
+      <pre style={{ whiteSpace: "pre-wrap" }}>{getErrorMessage(error)}</pre>
+      <button type="button" onClick={resetErrorBoundary}>
+        Try again
+      </button>
     </div>
   );
 };

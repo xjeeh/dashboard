@@ -16,12 +16,8 @@
   overflow-x: auto;
   -webkit-overflow-scrolling: touch;
 
-  @include bp.xl {
-    bottom: 0;
-    height: 40px;
-    min-height: 40px;
-    padding: 0 8px;
-  }
+  height: auto;
+  min-height: var(--taskbar-height);
 }
 
 .taskbarItem {

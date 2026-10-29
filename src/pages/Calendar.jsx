@@ -2,39 +2,20 @@ import css from "./Calendar.module.scss";
 import ReactCalendar from "react-calendar";
 import "react-calendar/dist/Calendar.css";
 
-import React, { useState } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import dayjs from "dayjs";
-import store from "store2";
 import { v4 as uuidv4 } from "uuid";
-
-// Novo: chave única para todos os eventos do calendário
-const CALENDAR_ALL_KEY = "calendar-all";
-
-function getAllCalendarEvents() {
-  return store.get(CALENDAR_ALL_KEY) || {};
-}
-function setAllCalendarEvents(obj) {
-  store.set(CALENDAR_ALL_KEY, obj);
-}
-function getEventsForDate(date) {
-  const all = getAllCalendarEvents();
-  return all[date] || [];
-}
-function setEventsForDate(date, list) {
-  const all = getAllCalendarEvents();
-  all[date] = list;
-  setAllCalendarEvents(all);
-}
+import { useUserData } from "../contexts/UserDataContext";
 
 export const CalendarPage = () => {
+  const { get, set, data } = useUserData();
+
   const [value, onChange] = useState(new Date());
   const [desc, setDesc] = useState("");
   const [category, setCategory] = useState("");
-  const [events, setEvents] = useState(getEventsForDate(dayjs(new Date()).format("YYYY-MM-DD")));
-  const [visible, setVisible] = useState(() => {
-    const stored = store.get("calendar-visible");
-    return typeof stored === "boolean" ? stored : false;
-  });
+  const [events, setEvents] = useState([]);
+  const [visible, setVisible] = useState(Boolean(data.calendarVisible));
+  const skipVisibleSync = useRef(true);
 
   const categories = [
     { value: "work", label: "Trabalho" },
@@ -45,15 +26,32 @@ export const CalendarPage = () => {
 
   const dateKey = dayjs(value).format("YYYY-MM-DD");
 
-  // Carregar eventos do dia ao trocar data
-  React.useEffect(() => {
-    setEvents(getEventsForDate(dateKey));
-  }, [dateKey]);
+  const getAllCalendarEvents = () => data.calendarAll || get("calendar-all") || {};
 
-  // Salvar visibilidade no store2 sempre que mudar
-  React.useEffect(() => {
-    store.set("calendar-visible", visible);
-  }, [visible]);
+  const setEventsForDate = (date, list) => {
+    const all = { ...getAllCalendarEvents() };
+    all[date] = list;
+    set("calendar-all", all);
+  };
+
+  useEffect(() => {
+    skipVisibleSync.current = true;
+    setVisible(Boolean(data.calendarVisible));
+  }, [data.calendarVisible]);
+
+  useEffect(() => {
+    const all = getAllCalendarEvents();
+    setEvents(all[dateKey] || []);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [dateKey, data.calendarAll]);
+
+  useEffect(() => {
+    if (skipVisibleSync.current) {
+      skipVisibleSync.current = false;
+      return;
+    }
+    set("calendar-visible", visible);
+  }, [visible, set]);
 
   const handleAddEvent = (e) => {
     e.preventDefault();
@@ -72,15 +70,12 @@ export const CalendarPage = () => {
     setEvents(updated);
   };
 
-  // Função para verificar se um dia tem eventos
   const hasEvents = (date) => {
     const key = dayjs(date).format("YYYY-MM-DD");
-    const all = getAllCalendarEvents();
-    const dayEvents = all[key];
+    const dayEvents = getAllCalendarEvents()[key];
     return Array.isArray(dayEvents) && dayEvents.length > 0;
   };
 
-  // tileContent para mostrar o círculo vermelho
   const renderTileContent = ({ date, view }) => {
     if (view === "month" && hasEvents(date)) {
       return (

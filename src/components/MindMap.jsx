@@ -2,7 +2,6 @@ import { useEffect, useRef, useState, useCallback, useMemo } from "react";
 import { Icon } from "./Icon";
 import css from "./MindMap.module.scss";
 import classNames from "classnames";
-import store from "store2";
 import { useWindow } from "../contexts/WindowContext";
 import { useWindowState } from "../hooks/useWindowState";
 import {
@@ -766,18 +765,17 @@ export const MindMap = () => {
 
   useEffect(() => {
     try {
-      const dataToSave = {
-        ...mindmap,
+      setMindmap((prev) => ({
+        ...prev,
         nodes,
         edges,
         zoom,
         viewport,
-      };
-      store.set(storeIndex, dataToSave);
+      }));
     } catch (error) {
       console.error("Erro ao salvar dados do mindmap:", error);
     }
-  }, [nodes, edges, zoom, viewport, mindmap]);
+  }, [nodes, edges, zoom, viewport]);
 
   const deleteSelectedNodes = useCallback(() => {
     if (selectedNodes.length === 0) return;

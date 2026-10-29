@@ -1,57 +1,42 @@
-import { createContext, useContext, useState, useCallback } from "react";
-import { useLocalstorage } from "../hooks/useLocalstorage";
+import { createContext, useContext, useState, useCallback, useEffect } from "react";
+import { useUserData } from "./UserDataContext";
+import { useAuth } from "./AuthContext";
 
 const WindowContext = createContext();
 
 export const WindowProvider = ({ children }) => {
-  // Inicializar verificando o localStorage de cada componente
-  const { getValue } = useLocalstorage();
-  const notepadData = getValue("notepad-daily");
-  const postitData = getValue("postIt-daily");
-  const mindmapData = getValue("mindmap-daily");
-  const [minimizedWindows, setMinimizedWindows] = useState(() => {
+  const { isAuthenticated } = useAuth();
+  const { ready, get } = useUserData();
+  const [minimizedWindows, setMinimizedWindows] = useState([]);
+
+  useEffect(() => {
+    if (!isAuthenticated || !ready) {
+      setMinimizedWindows([]);
+      return;
+    }
+
     const windows = [];
+    const notepadData = get("notepad-daily");
+    const postitData = get("postIt-daily");
+    const mindmapData = get("mindmap-daily");
 
-    // Verificar Notepad
     if (notepadData?.isMinimized && !notepadData?.isClosed) {
-      windows.push({
-        id: "notepad",
-        type: "notepad",
-        title: "Notepad",
-        isMinimized: true,
-      });
+      windows.push({ id: "notepad", type: "notepad", title: "Notepad", isMinimized: true });
     }
-
-    // Verificar PostIt
     if (postitData?.isMinimized && !postitData?.isClosed) {
-      windows.push({
-        id: "postit",
-        type: "postit",
-        title: "Post-it",
-        isMinimized: true,
-      });
+      windows.push({ id: "postit", type: "postit", title: "Post-it", isMinimized: true });
     }
-
-    // Verificar MindMap
     if (mindmapData?.isMinimized && !mindmapData?.isClosed) {
-      windows.push({
-        id: "mindmap",
-        type: "mindmap",
-        title: "Mind Map",
-        isMinimized: true,
-      });
+      windows.push({ id: "mindmap", type: "mindmap", title: "Mind Map", isMinimized: true });
     }
-
-    return windows;
-  });
+    setMinimizedWindows(windows);
+  }, [isAuthenticated, ready, get]);
 
   const addMinimizedWindow = useCallback((window) => {
     setMinimizedWindows((prev) => {
-      // Se a janela já existe, atualiza
       if (prev.find((w) => w.id === window.id)) {
         return prev.map((w) => (w.id === window.id ? window : w));
       }
-      // Se não existe, adiciona
       return [...prev, window];
     });
   }, []);

@@ -1,10 +1,10 @@
 import { useState, useEffect, useRef } from "react";
 import css from "./Diet.module.scss";
-import store from "store2";
 import { Icon } from "../components/Icon";
 import { DndProvider, useDrag, useDrop } from "react-dnd";
 import { HTML5Backend } from "react-dnd-html5-backend";
 import { v4 as uuidv4 } from "uuid";
+import { useUserData } from "../contexts/UserDataContext";
 
 // Função utilitária para parsear CSV simples
 function parseCSV(csv) {
@@ -65,28 +65,6 @@ function SelectNome({ options, value, onSelect }) {
   );
 }
 
-// Novo: chave única para todas as dietas
-const DIET_ALL_KEY = "diet-all";
-
-// Função para obter todas as dietas
-function getAllDiets() {
-  return store.get(DIET_ALL_KEY) || {};
-}
-// Função para salvar todas as dietas
-function setAllDiets(obj) {
-  store.set(DIET_ALL_KEY, obj);
-}
-// Função para obter a lista de um dia
-function getDietForDate(date) {
-  const all = getAllDiets();
-  return all[date] || [];
-}
-// Função para salvar a lista de um dia
-function setDietForDate(date, list) {
-  const all = getAllDiets();
-  all[date] = list;
-  setAllDiets(all);
-}
 
 // Componente para o item arrastável
 const DraggableRow = ({ index, moveRow, children }) => {
@@ -126,6 +104,16 @@ const DraggableRow = ({ index, moveRow, children }) => {
 };
 
 const Diet = () => {
+  const { get, set, data } = useUserData();
+
+  const getDietForDate = (date) => (data.dietAll || get("diet-all") || {})[date] || [];
+
+  const setDietForDate = (date, dayList) => {
+    const all = { ...(get("diet-all") || {}) };
+    all[date] = dayList;
+    set("diet-all", all);
+  };
+
   const newItem = () => ({
     id: uuidv4(),
     name: "",
@@ -141,8 +129,13 @@ const Diet = () => {
 
   const [selectedDate, setSelectedDate] = useState(getToday());
 
-  const [list, setList] = useState(getDietForDate(getToday()));
+  const [list, setList] = useState([]);
   const [currentItem, setCurrentItem] = useState(newItem());
+
+  useEffect(() => {
+    setList(getDietForDate(selectedDate));
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [selectedDate, data.dietAll]);
 
   // Estado para os componentes do CSV
   const [components, setComponents] = useState([]);
